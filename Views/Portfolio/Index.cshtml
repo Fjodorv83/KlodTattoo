@@ -2,22 +2,40 @@
 
 @{
     ViewData["Title"] = "Portfolio";
+    // Lista unica di stili dai PortfolioItem per generare i filtri dinamici
+    var styles = Model.Select(x => x.Style).Distinct().ToList();
 }
 
-<div class="text-center mb-5">
+<div class="text-center mb-5" data-aos="fade-up">
     <h1 class="display-4 text-uppercase" style="color: #d4af37;">Klodback Works</h1>
     <p class="lead text-muted">Inchiostro indelebile, arte eterna.</p>
     <div style="width: 60px; height: 3px; background-color: #d4af37; margin: 20px auto;"></div>
 </div>
 
-<div class="row g-4">
+<!-- FILTRI -->
+<div class="text-center mb-4" data-aos="fade-up" data-aos-delay="100">
+    <button class="btn btn-outline-light btn-sm me-2 mb-2 filter-btn active" data-filter="*">Tutti</button>
+    @foreach (var style in styles)
+    {
+        <button class="btn btn-outline-light btn-sm me-2 mb-2 filter-btn" data-filter=".@style.Replace(" ", "-")">@style</button>
+    }
+</div>
+
+<div class="row g-4 portfolio-container">
     @foreach (var item in Model)
     {
-        <div class="col-md-4 col-lg-3">
-            <div class="portfolio-item position-relative overflow-hidden rounded shadow-sm" style="height: 300px; cursor: pointer;">
-                <img src="@item.ImageUrl" class="w-100 h-100" alt="@item.Title" style="object-fit: cover; transition: transform 0.5s ease;">
-                <div class="portfolio-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center p-3" 
-                     style="background: rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.3s ease;">
+        <div class="col-md-4 col-lg-3 portfolio-item @item.Style.Replace(" ", "-")" data-aos="zoom-in">
+            <div class="position-relative overflow-hidden rounded shadow-sm" style="height: 300px; cursor: pointer;">
+
+                <!-- Link per GLightbox -->
+                <a href="@item.ImageUrl" class="glightbox" data-gallery="tattoo-gallery" data-title="@item.Title">
+                    <img src="@item.ImageUrl" class="w-100 h-100" alt="@item.Title"
+                         style="object-fit: cover; transition: transform 0.6s ease;">
+                </a>
+
+                <div class="portfolio-overlay position-absolute top-0 start-0 w-100 h-100
+                                d-flex flex-column justify-content-center align-items-center text-center p-3"
+                     style="background: rgba(0,0,0,0.85); opacity: 0; transition: opacity 0.4s ease;">
                     <h5 class="text-uppercase mb-2" style="color: #d4af37;">@item.Title</h5>
                     <p class="text-white small mb-3">@item.Style</p>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-light btn-sm rounded-0 px-4">Vedi</a>
@@ -29,9 +47,57 @@
 
 <style>
     .portfolio-item:hover img {
-        transform: scale(1.1);
+        transform: scale(1.12);
     }
+
     .portfolio-item:hover .portfolio-overlay {
         opacity: 1 !important;
     }
+
+    .filter-btn.active {
+        background-color: #d4af37;
+        color: #1e1e1e;
+        border-color: #d4af37;
+    }
 </style>
+
+<!-- AOS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<!-- GLightbox -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
+<script>
+    // Inizializza AOS
+    AOS.init({ once: true });
+
+    // Inizializza GLightbox
+    const lightbox = GLightbox({ touchNavigation: true, loop: true, closeButton: true, zoomable: true });
+
+    // FILTRI
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+
+            portfolioItems.forEach(item => {
+                if (filter === '*' || item.classList.contains(filter)) {
+                    item.style.display = 'block';
+                    item.setAttribute('data-aos', 'zoom-in'); // riattiva AOS
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Refresh AOS per ricalcolare animazioni
+            AOS.refresh();
+        });
+    });
+</script>

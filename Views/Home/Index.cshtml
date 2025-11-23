@@ -1,64 +1,109 @@
 ﻿@{
     ViewData["Title"] = "Home";
-    // Scommenta la riga sotto se NON vuoi usare il _Layout.cshtml per questa pagina specifica
-    // Layout = null;
 }
 
-<div class="hero-section position-relative text-center text-white mb-5" style="background-image: url('/images/hero.png'); background-size: cover; background-position: center; height: 80vh; display: flex; align-items: center; justify-content: center;">
-    <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6);"></div>
-    <div class="content position-relative" style="z-index: 1;">
-        <h1 class="display-1 fw-bold text-uppercase" style="letter-spacing: 5px; color: #d4af37;">Klod Tattoo</h1>
-        <p class="lead mb-4 fs-3">L'arte sulla tua pelle</p>
-        <a asp-controller="Booking" asp-action="Create" class="btn btn-primary btn-lg px-5 py-3 rounded-0">Prenota Ora</a>
+<!-- HERO SECTION -->
+<div class="hero-section position-relative text-center text-white mb-5"
+     style="background-image: url('/images/hero.jpg'); background-size: cover; background-position: center; height: 80vh; display: flex; align-items: center; justify-content: center;">
+
+    <div class="overlay"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65);"></div>
+
+    <div class="content position-relative" style="z-index: 1;" data-aos="fade-up" data-aos-duration="1000">
+        <h1 class="display-1 fw-bold text-uppercase" style="letter-spacing: 5px; color: #d4af37;">
+            Klod Tattoo
+        </h1>
+        <p class="lead mb-4 fs-3" style="letter-spacing: 2px;">Kunst auf deiner Haut</p>
+        <a asp-controller="Booking" asp-action="Create"
+           class="btn btn-outline-light btn-lg px-5 py-3 rounded-0"
+           style="border-color: #d4af37; color: #d4af37;" data-aos="fade-up" data-aos-delay="200">
+            Jetzt buchen
+        </a>
     </div>
 </div>
 
+
 <div class="container">
+
+    <!-- BIOGRAPHY -->
     <div class="row mb-5 align-items-center">
         <div class="col-md-6">
-            <h2 class="text-uppercase mb-4" style="border-left: 4px solid #d4af37; padding-left: 15px;">Chi Siamo</h2>
-            <p class="lead text-muted">
-                Benvenuti da Klod Tattoo, dove la passione per l'arte incontra la professionalità.
-                Ogni tatuaggio è un pezzo unico, progettato su misura per raccontare la tua storia.
+            <h2 class="text-uppercase mb-4"
+                style="border-left: 4px solid #d4af37; padding-left: 15px;"
+                data-aos="fade-right">
+                Biography
+            </h2>
+
+            <p class="lead text-muted"
+               data-aos="fade-up"
+               data-aos-duration="800">
+                Benvenuti in <strong>Klod Tattoo</strong>: qui l’arte non si osserva… si indossa.
+                Ogni linea, ogni ombra e ogni dettaglio nasce da una visione studiata e costruita su misura per te.
+                Non creo tatuaggi “standard”: ogni progetto è un pezzo irripetibile, pensato per raccontare la tua storia
+                con stile, forza ed eleganza.
             </p>
-            <p class="text-muted">
-                Specializzati in diversi stili, dal realistico al traditional, offriamo un ambiente sicuro,
-                igienico e accogliente. Utilizziamo solo attrezzature di ultima generazione e inchiostri certificati
-                per garantire il massimo risultato e la tua sicurezza.
+
+            <p class="text-muted"
+               data-aos="fade-up"
+               data-aos-duration="900"
+               data-aos-delay="150">
+                La mia formazione parte dal <strong>Liceo Artistico</strong> e si perfeziona all’
+                <strong>Istituto delle Belle Arti</strong>, dove ho trasformato il disegno in una vera disciplina estetica.
+                Questa base accademica, unita agli anni di esperienza sul campo, mi permette di combinare precisione tecnica
+                e sensibilità artistica in ogni lavoro.
+            </p>
+
+            <p class="text-muted"
+               data-aos="fade-up"
+               data-aos-duration="1000"
+               data-aos-delay="300">
+                Specializzato in stili come <strong>realistico</strong>, <strong>traditional</strong>,
+                <strong>fine line</strong> e <strong>blackwork</strong>, utilizzo solo attrezzature di ultima generazione e
+                inchiostri certificati, garantendo massima sicurezza, igiene impeccabile e risultati che durano nel tempo.
+            </p>
+
+            <p class="text-muted"
+               data-aos="fade-up"
+               data-aos-duration="1100"
+               data-aos-delay="450">
+                Da Klod Tattoo non ricevi un tatuaggio: <br />
+                <strong>ricevi un’opera d’arte creata per accompagnarti per sempre.</strong>
             </p>
         </div>
-        <div class="col-md-6 text-center">
-            <div class="p-5 border border-secondary" style="background-color: #1e1e1e;">
-                <i class="fas fa-paint-brush fa-3x mb-3" style="color: #d4af37;"></i>
-                <h3 class="h4">Design Personalizzati</h3>
-                <p class="text-muted small">Trasformiamo le tue idee in realtà.</p>
 
-                <i class="fas fa-shield-alt fa-3x mb-3 mt-4" style="color: #d4af37;"></i>
-                <h3 class="h4">Igiene Garantita</h3>
-                <p class="text-muted small">Standard di sicurezza elevatissimi.</p>
+        <div class="col-md-6 text-center">
+            <div class="p-3 border border-secondary rounded shadow-lg bg-dark"
+                 data-aos="zoom-in"
+                 data-aos-duration="900">
+                <img src="~/images/profile.jpg" class="img-fluid rounded" alt="Klod Tattoo Artist" />
             </div>
         </div>
     </div>
 
-    <div class="row text-center mb-5">
+
+    <!-- STYLES -->
+    <div class="row text-center mb-5" data-aos="fade-up">
         <div class="col-12 mb-4">
             <h2 class="text-uppercase" style="color: #d4af37;">I Nostri Stili</h2>
             <div style="width: 60px; height: 3px; background-color: #d4af37; margin: 0 auto;"></div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 p-4">
+
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100 p-4 bg-dark text-light border-secondary shadow">
                 <h3 class="h4" style="color: #d4af37;">Realistico</h3>
                 <p class="small text-muted">Ritratti e dettagli fotografici.</p>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 p-4">
+
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100 p-4 bg-dark text-light border-secondary shadow">
                 <h3 class="h4" style="color: #d4af37;">Traditional</h3>
                 <p class="small text-muted">Linee solide e colori vibranti.</p>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 p-4">
+
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card h-100 p-4 bg-dark text-light border-secondary shadow">
                 <h3 class="h4" style="color: #d4af37;">Blackwork</h3>
                 <p class="small text-muted">Contrasti forti e geometrie.</p>
             </div>
@@ -66,37 +111,57 @@
     </div>
 
 
+    <!-- REVIEWS -->
     <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
+        <div class="col-12 text-center mb-4" data-aos="fade-up">
             <h2 class="text-uppercase">Dicono di Noi</h2>
             <div style="width: 60px; height: 3px; background-color: #d4af37; margin: 0 auto;"></div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card bg-dark border-secondary p-4 h-100">
+
+        <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card bg-dark border-secondary p-4 h-100 shadow">
                 <div class="mb-3 text-warning">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
-                <p class="text-muted fst-italic">"Klod è un artista incredibile. Ha capito subito cosa volevo e il risultato è andato oltre le aspettative. Studio pulitissimo."</p>
+                <p class="text-muted fst-italic">
+                    "Klod è un artista incredibile. Ha capito subito cosa volevo e il risultato è andato oltre le aspettative. Studio pulitissimo."
+                </p>
                 <footer class="blockquote-footer mt-3">Marco R.</footer>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card bg-dark border-secondary p-4 h-100">
+
+        <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="200">
+            <div class="card bg-dark border-secondary p-4 h-100 shadow">
                 <div class="mb-3 text-warning">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
-                <p class="text-muted fst-italic">"Professionalità al top. Mi sono sentita subito a mio agio. Il tatuaggio è guarito perfettamente seguendo i suoi consigli."</p>
+                <p class="text-muted fst-italic">
+                    "Professionalità al top. Mi sono sentita subito a mio agio. Il tatuaggio è guarito perfettamente seguendo i suoi consigli."
+                </p>
                 <footer class="blockquote-footer mt-3">Giulia B.</footer>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card bg-dark border-secondary p-4 h-100">
+
+        <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="card bg-dark border-secondary p-4 h-100 shadow">
                 <div class="mb-3 text-warning">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
-                <p class="text-muted fst-italic">"Mano leggerissima e precisione chirurgica. Tornerò sicuramente per il prossimo pezzo!"</p>
+                <p class="text-muted fst-italic">
+                    "Mano leggerissima e precisione chirurgica. Tornerò sicuramente per il prossimo pezzo!"
+                </p>
                 <footer class="blockquote-footer mt-3">Luca S.</footer>
             </div>
         </div>
     </div>
 </div>
+
+
+<!-- AOS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    AOS.init({
+        once: true
+    });
+</script>

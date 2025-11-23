@@ -1,0 +1,35 @@
+﻿@model KlodTattooWeb.Models.PortfolioItem
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center" data-aos="fade-up">
+            <h1 class="display-5 text-uppercase mb-3" style="color: #d4af37;">@Model.Title</h1>
+            <p class="text-muted mb-4">@Model.Style</p>
+
+            <!-- Immagine ingrandita -->
+            <a href="@Model.ImageUrl" class="glightbox" data-gallery="tattoo-gallery" data-title="@Model.Title">
+                <img src="@Model.ImageUrl" class="img-fluid rounded shadow-lg mb-4" alt="@Model.Title"
+                     style="max-height: 600px; object-fit: cover; transition: transform 0.5s;">
+            </a>
+
+            <p class="text-muted small mb-4">Creato il: @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+
+            <a asp-action="Index" class="btn btn-outline-light rounded-0 px-4 py-2">Torna al Portfolio</a>
+        </div>
+    </div>
+</div>
+
+<!-- AOS e GLightbox (se non già presenti nel Layout) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
+<script>
+    AOS.init({ once: true });
+    const lightbox = GLightbox({ touchNavigation: true, loop: true, closeButton: true, zoomable: true });
+</script>

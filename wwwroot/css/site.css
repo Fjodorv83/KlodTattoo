@@ -1,16 +1,16 @@
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap');
 
 :root {
     --bg-color: #121212;
     --surface-color: #1e1e1e;
     --text-color: #e0e0e0;
-    --accent-color: #d4af37;
-    /* Gold */
+    --accent-color: #d4af37; /* Gold */
     --accent-hover: #b5952f;
     --secondary-text: #a0a0a0;
-    --font-heading: 'Cinzel', serif;
-    --font-body: 'Lato', sans-serif;
+    /* NEW FONTS */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Poppins', sans-serif;
 }
 
 html {
@@ -30,26 +30,22 @@ body {
     margin-bottom: 60px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     color: var(--accent-color);
 }
 
+/* Anchor links */
 a {
     color: var(--accent-color);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-a:hover {
-    color: var(--accent-hover);
-}
-
+    a:hover {
+        color: var(--accent-hover);
+    }
 
 /* Navbar base */
 .navbar {
@@ -69,10 +65,11 @@ a:hover {
 /* Navbar links */
 .navbar-nav .nav-link {
     color: var(--text-color) !important;
-    font-weight: 500;
+    font-weight: 600;
     margin-right: 1rem;
     transition: color 0.3s ease;
     text-transform: uppercase;
+    font-family: var(--font-body);
 }
 
     .navbar-nav .nav-link:hover {
@@ -85,6 +82,7 @@ a:hover {
     border-color: var(--accent-color);
     color: #000;
     font-weight: 700;
+    font-family: var(--font-body);
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
@@ -93,10 +91,9 @@ a:hover {
     .navbar .btn-primary:hover {
         background-color: var(--accent-hover);
         border-color: var(--accent-hover);
-        color: #000;
     }
 
-/* Navbar collapse per mobile */
+/* Navbar collapse mobile */
 .navbar-toggler {
     border-color: var(--accent-color);
 }
@@ -122,23 +119,6 @@ a:hover {
         }
 }
 
-
-.navbar-brand {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--accent-color) !important;
-}
-
-.nav-link {
-    color: var(--text-color) !important;
-    font-weight: 400;
-}
-
-.nav-link:hover {
-    color: var(--accent-color) !important;
-}
-
 /* Footer */
 .footer {
     background-color: var(--surface-color);
@@ -149,6 +129,7 @@ a:hover {
     width: 100%;
     white-space: nowrap;
     line-height: 60px;
+    font-family: var(--font-body);
 }
 
 /* Buttons */
@@ -159,32 +140,35 @@ a:hover {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-family: var(--font-body);
 }
 
-.btn-primary:hover {
-    background-color: var(--accent-hover);
-    border-color: var(--accent-hover);
-    color: #000;
-}
+    .btn-primary:hover {
+        background-color: var(--accent-hover);
+        border-color: var(--accent-hover);
+    }
 
 .btn-outline-light {
     border-color: var(--accent-color);
     color: var(--accent-color);
+    font-family: var(--font-body);
 }
 
-.btn-outline-light:hover {
-    background-color: var(--accent-color);
-    color: #000;
-}
+    .btn-outline-light:hover {
+        background-color: var(--accent-color);
+        color: #000;
+    }
 
 /* Cards */
 .card {
     background-color: var(--surface-color);
     border: 1px solid #333;
+    font-family: var(--font-body);
 }
 
 .card-title {
     color: var(--accent-color);
+    font-family: var(--font-heading);
 }
 
 .card-text {
@@ -196,19 +180,20 @@ a:hover {
     background-color: #2c2c2c !important;
     border: 1px solid #444 !important;
     color: #ffffff !important;
+    font-family: var(--font-body);
 }
 
-.form-control:focus {
-    background-color: #333 !important;
-    border-color: var(--accent-color) !important;
-    color: #ffffff !important;
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
-}
+    .form-control:focus {
+        background-color: #333 !important;
+        border-color: var(--accent-color) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+    }
 
-.form-control::placeholder {
-    color: #888 !important;
-    opacity: 1;
-}
+    .form-control::placeholder {
+        color: #888 !important;
+        opacity: 1;
+    }
 
 /* Utilities */
 .text-muted {

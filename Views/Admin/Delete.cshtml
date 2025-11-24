@@ -1,0 +1,46 @@
+@model KlodTattooWeb.Models.PortfolioItem
+
+@{
+    ViewData["Title"] = "Elimina Elemento Portfolio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Elimina</h1>
+
+<h3>Sei sicuro di voler eliminare questo elemento?</h3>
+<div>
+    <h4>Elemento Portfolio</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Style)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Style)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Model.ImageUrl" alt="@Model.Title" style="max-width: 200px; max-height: 200px;" />
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Elimina" class="btn btn-danger" /> |
+        <a asp-action="Index">Torna alla Lista</a>
+    </form>
+</div>

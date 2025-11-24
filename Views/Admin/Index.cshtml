@@ -1,0 +1,58 @@
+@model IEnumerable<KlodTattooWeb.Models.PortfolioItem>
+
+@{
+    ViewData["Title"] = "Gestione Portfolio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Gestione Portfolio</h1>
+
+<div class="mb-3">
+    <a asp-action="Bookings" class="btn btn-secondary">Vai a Gestione Prenotazioni</a>
+</div>
+
+<p>
+    <a asp-action="Create">Crea Nuovo Elemento Portfolio</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Style)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Style)
+                </td>
+                <td>
+                    <img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px; max-height: 100px;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Modifica</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Elimina</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,49 @@
+@model IEnumerable<KlodTattooWeb.Models.BookingRequest>
+
+@{
+    ViewData["Title"] = "Gestione Prenotazioni";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Gestione Prenotazioni</h1>
+
+<p>
+    <a asp-action="Index">Torna alla Gestione Portfolio</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PreferredDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PreferredDate)
+                </td>
+                <td>
+                    <a asp-action="BookingDetails" asp-route-id="@item.Id">Dettagli</a> |
+                    <a asp-action="DeleteBooking" asp-route-id="@item.Id">Elimina</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

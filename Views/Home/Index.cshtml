@@ -15,8 +15,8 @@
         </h1>
         <p class="lead mb-4 fs-3" style="letter-spacing: 2px;">Kunst auf deiner Haut</p>
         <a asp-controller="Booking" asp-action="Create"
-           class="btn btn-outline-light btn-lg px-5 py-3 rounded-0"
-           style="border-color: #d4af37; color: #d4af37;" data-aos="fade-up" data-aos-delay="200">
+           class="btn btn-outline-light btn-lg px-5 py-3 rounded-0 cta-gold"
+           data-aos="fade-up" data-aos-delay="200">
             Jetzt buchen
         </a>
     </div>
@@ -156,6 +156,22 @@
     </div>
 </div>
 
+<!-- CUSTOM CTA STYLES -->
+<style>
+    /* Classe personalizzata per il pulsante "Jetzt buchen" */
+    .cta-gold {
+        color: #d4af37;
+        border-color: #d4af37;
+        transition: color 160ms ease-in-out, background-color 160ms ease-in-out;
+    }
+
+    /* Al passaggio del mouse (hover) o focus su tastiera, testo nero */
+    .cta-gold:hover,
+    .cta-gold:focus {
+        color: #000 !important;
+        text-decoration: none;
+    }
+</style>
 
 <!-- AOS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />

@@ -1,0 +1,44 @@
+@model KlodTattooWeb.Models.PortfolioItem
+
+@{
+    ViewData["Title"] = "Crea Nuovo Elemento Portfolio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Crea</h1>
+
+<h4>Elemento Portfolio</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Style" class="control-label"></label>
+                <input asp-for="Style" class="form-control" />
+                <span asp-validation-for="Style" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="imageFile" class="control-label">Immagine</label>
+                <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
+                <span class="text-danger" id="imageFileValidation"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crea" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Torna alla Lista</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

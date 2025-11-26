@@ -74,11 +74,11 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<AppDbContext>();
 
     // Applica migrazioni automaticamente in produzione
     try
     {
-        var dbContext = services.GetRequiredService<AppDbContext>();
         dbContext.Database.Migrate();
     }
     catch (Exception ex)
@@ -141,7 +141,6 @@ using (var scope = app.Services.CreateScope())
     // ---------------------------
     // SEED: Tattoo Styles
     // ---------------------------
-    var dbContext = services.GetRequiredService<AppDbContext>();
     string[] tattooStyleNames = { "Realistic", "Fine line", "black art", "Lettering", "small" };
 
     foreach (var styleName in tattooStyleNames)

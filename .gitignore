@@ -18,6 +18,8 @@ wwwroot/lib/
 wwwroot/dist/
 appsettings.*.json
 *.db
+*.db-shm
+*.db-wal
 
 # NuGet
 *.nupkg
@@ -55,3 +57,6 @@ _ReSharper*/
 *.bak
 *.backup
 *.swp
+
+# Claude Code
+.claude/

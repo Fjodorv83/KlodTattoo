@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 text-center" data-aos="fade-up">
             <h1 class="display-5 text-uppercase mb-3" style="color: #d4af37;">@Model.Title</h1>
-            <p class="text-muted mb-4">@Model.Style</p>
+            <p class="text-muted mb-4">@Model.TattooStyle?.Name</p>
 
             <!-- Immagine ingrandita -->
             <a href="@Model.ImageUrl" class="glightbox" data-gallery="tattoo-gallery" data-title="@Model.Title">

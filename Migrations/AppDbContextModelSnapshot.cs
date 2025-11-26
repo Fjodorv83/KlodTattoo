@@ -67,9 +67,8 @@ namespace KlodTattooWeb.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Style")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("TattooStyleId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -77,7 +76,25 @@ namespace KlodTattooWeb.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TattooStyleId");
+
                     b.ToTable("PortfolioItems");
+                });
+
+            modelBuilder.Entity("KlodTattooWeb.Models.TattooStyle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TattooStyles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -219,11 +236,9 @@ namespace KlodTattooWeb.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
@@ -261,11 +276,9 @@ namespace KlodTattooWeb.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -274,6 +287,15 @@ namespace KlodTattooWeb.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("KlodTattooWeb.Models.PortfolioItem", b =>
+                {
+                    b.HasOne("KlodTattooWeb.Models.TattooStyle", "TattooStyle")
+                        .WithMany("PortfolioItems")
+                        .HasForeignKey("TattooStyleId");
+
+                    b.Navigation("TattooStyle");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -325,6 +347,11 @@ namespace KlodTattooWeb.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("KlodTattooWeb.Models.TattooStyle", b =>
+                {
+                    b.Navigation("PortfolioItems");
                 });
 #pragma warning restore 612, 618
         }

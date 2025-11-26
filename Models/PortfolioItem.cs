@@ -14,7 +14,11 @@ public class PortfolioItem
     [Required]
     public string ImageUrl { get; set; } = string.Empty; // Percorso dell'immagine
 
-    public string Style { get; set; } = "Blackwork"; // Es: Traditional, Realistico
+    // Foreign key for TattooStyle
+    public int? TattooStyleId { get; set; }
+    
+    // Navigation property
+    public TattooStyle? TattooStyle { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 }

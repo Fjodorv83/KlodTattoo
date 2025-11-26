@@ -14,48 +14,43 @@ namespace KlodTattooWeb.Controllers
             _context = context;
         }
 
-        // GET: Portfolio
-        public async Task<IActionResult> Index()
-        {
-            // Recupera tutti i tatuaggi ordinati per data di creazione decrescente
-            var items = await _context.PortfolioItems
-                                      .AsNoTracking()
-                                      .OrderByDescending(x => x.CreatedAt)
-                                      .ToListAsync();
-
-            return View(items);
-        }
-
-        // GET: Portfolio/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var item = await _context.PortfolioItems
-                                     .AsNoTracking()
-                                     .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (item == null)
-                return NotFound();
-
-            return View(item);
-        }
-
-        // OPTIONAL: Filtra per stile
-        public async Task<IActionResult> ByStyle(string style)
-        {
-            if (string.IsNullOrEmpty(style))
-                return RedirectToAction(nameof(Index));
-
-            var items = await _context.PortfolioItems
-                                      .AsNoTracking()
-                                      .Where(p => p.Style == style)
-                                      .OrderByDescending(x => x.CreatedAt)
-                                      .ToListAsync();
-
-            ViewBag.SelectedStyle = style;
-            return View("Index", items);
-        }
-    }
+                // GET: Portfolio
+                public async Task<IActionResult> Index(string styleName)
+                {
+                    // Recupera tutti i tatuaggi ordinati per data di creazione decrescente
+                    var query = _context.PortfolioItems
+                                              .AsNoTracking()
+                                              .Include(p => p.TattooStyle)
+                                              .OrderByDescending(x => x.CreatedAt);
+        
+                    if (!string.IsNullOrEmpty(styleName))
+                    {
+                        query = (IOrderedQueryable<PortfolioItem>)query.Where(p => p.TattooStyle != null && p.TattooStyle.Name == styleName);
+                        ViewBag.SelectedStyle = styleName;
+                    }
+        
+                    var items = await query.ToListAsync();
+        
+                    // Pass all available styles to the view for filter buttons
+                    ViewBag.TattooStyles = await _context.TattooStyles.Select(s => s.Name).ToListAsync();
+        
+                    return View(items);
+                }
+        
+                // GET: Portfolio/Details/5
+                public async Task<IActionResult> Details(int? id)
+                {
+                    if (id == null)
+                        return NotFound();
+        
+                    var item = await _context.PortfolioItems
+                                             .AsNoTracking()
+                                             .Include(p => p.TattooStyle)
+                                             .FirstOrDefaultAsync(m => m.Id == id);
+        
+                    if (item == null)
+                        return NotFound();
+        
+                    return View(item);
+                }    }
 }

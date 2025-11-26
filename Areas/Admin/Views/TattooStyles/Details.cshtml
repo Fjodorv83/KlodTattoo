@@ -1,0 +1,25 @@
+@model KlodTattooWeb.Models.TattooStyle
+
+@{
+    ViewData["Title"] = "Dettagli Stile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Dettagli Stile</h1>
+
+<div>
+    <h4>TattooStyle</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Modifica</a> |
+    <a asp-action="Index">Torna alla Lista</a>
+</div>

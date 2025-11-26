@@ -10,4 +10,5 @@ public class AppDbContext : IdentityDbContext
 
     public DbSet<PortfolioItem> PortfolioItems { get; set; }
     public DbSet<BookingRequest> BookingRequests { get; set; }
+    public DbSet<TattooStyle> TattooStyles { get; set; }
 }

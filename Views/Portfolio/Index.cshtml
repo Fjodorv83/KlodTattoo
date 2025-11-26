@@ -2,8 +2,8 @@
 
 @{
     ViewData["Title"] = "Portfolio";
-    // Lista unica di stili dai PortfolioItem per generare i filtri dinamici
-    var styles = Model.Select(x => x.Style).Distinct().ToList();
+    var availableStyles = ViewBag.TattooStyles as List<string>;
+    var selectedStyle = ViewBag.SelectedStyle as string;
 }
 
 <div class="text-center mb-5" data-aos="fade-up">
@@ -14,17 +14,22 @@
 
 <!-- FILTRI -->
 <div class="text-center mb-4" data-aos="fade-up" data-aos-delay="100">
-    <button class="btn btn-outline-light btn-sm me-2 mb-2 filter-btn active" data-filter="*">Tutti</button>
-    @foreach (var style in styles)
+    <a class="btn btn-outline-light btn-sm me-2 mb-2 @(string.IsNullOrEmpty(selectedStyle) ? "active" : "")"
+       asp-action="Index" asp-controller="Portfolio">Tutti</a>
+    @if (availableStyles != null)
     {
-        <button class="btn btn-outline-light btn-sm me-2 mb-2 filter-btn" data-filter=".@style.Replace(" ", "-")">@style</button>
+        @foreach (var style in availableStyles)
+        {
+            <a class="btn btn-outline-light btn-sm me-2 mb-2 @(style == selectedStyle ? "active" : "")"
+               asp-action="Index" asp-controller="Portfolio" asp-route-styleName="@style">@style</a>
+        }
     }
 </div>
 
 <div class="row g-4 portfolio-container">
     @foreach (var item in Model)
     {
-        <div class="col-md-4 col-lg-3 portfolio-item @item.Style.Replace(" ", "-")" data-aos="zoom-in">
+        <div class="col-md-4 col-lg-3 portfolio-item @(item.TattooStyle?.Name?.Replace(" ", "-"))" data-aos="zoom-in">
             <div class="position-relative overflow-hidden rounded shadow-sm" style="height: 300px; cursor: pointer;">
 
                 <!-- Link per GLightbox -->
@@ -37,7 +42,7 @@
                                 d-flex flex-column justify-content-center align-items-center text-center p-3"
                      style="background: rgba(0,0,0,0.85); opacity: 0; transition: opacity 0.4s ease;">
                     <h5 class="text-uppercase mb-2" style="color: #d4af37;">@item.Title</h5>
-                    <p class="text-white small mb-3">@item.Style</p>
+                    <p class="text-white small mb-3">@item.TattooStyle?.Name</p>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-light btn-sm rounded-0 px-4">Vedi</a>
                 </div>
             </div>
@@ -75,29 +80,4 @@
 
     // Inizializza GLightbox
     const lightbox = GLightbox({ touchNavigation: true, loop: true, closeButton: true, zoomable: true });
-
-    // FILTRI
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-
-    filterButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const filter = btn.getAttribute('data-filter');
-
-            portfolioItems.forEach(item => {
-                if (filter === '*' || item.classList.contains(filter)) {
-                    item.style.display = 'block';
-                    item.setAttribute('data-aos', 'zoom-in'); // riattiva AOS
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            // Refresh AOS per ricalcolare animazioni
-            AOS.refresh();
-        });
-    });
 </script>

@@ -2,7 +2,9 @@ using KlodTattooWeb.Data;
 using KlodTattooWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using KlodTattooWeb.Services; // Add this using directive
-using Microsoft.Extensions.Options; // Add this using directive
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services; // Add this using directive
 
 namespace KlodTattooWeb.Controllers
 {

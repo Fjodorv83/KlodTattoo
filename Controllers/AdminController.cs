@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KlodTattooWeb.Data;
 using KlodTattooWeb.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KlodTattooWeb.Controllers
 {
@@ -21,7 +22,7 @@ namespace KlodTattooWeb.Controllers
         // GET: Admin
         public async Task<IActionResult> Index()
         {
-            return View(await _context.PortfolioItems.ToListAsync());
+            return View(await _context.PortfolioItems.Include(p => p.TattooStyle).ToListAsync());
         }
 
         // GET: Admin/Bookings
@@ -33,19 +34,20 @@ namespace KlodTattooWeb.Controllers
 
 
         // GET: Admin/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewData["TattooStyleId"] = new SelectList(await _context.TattooStyles.ToListAsync(), "Id", "Name");
             return View();
         }
 
         // POST: Admin/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Style")] PortfolioItem portfolioItem, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("Title,TattooStyleId")] PortfolioItem portfolioItem, IFormFile imageFile)
         {
             // Rimuovi ImageUrl e Description dalla validazione del modello perché verranno gestiti manualmente.
             ModelState.Remove(nameof(portfolioItem.ImageUrl));
-            ModelState.Remove(nameof(portfolioItem.Description));
+            // ModelState.Remove(nameof(portfolioItem.Description)); // Description is not bound here, so no need to remove validation for it.
 
             if (ModelState.IsValid)
             {
@@ -71,6 +73,7 @@ namespace KlodTattooWeb.Controllers
                 }
                 ModelState.AddModelError("imageFile", "Please upload an image file.");
             }
+            ViewData["TattooStyleId"] = new SelectList(await _context.TattooStyles.ToListAsync(), "Id", "Name", portfolioItem.TattooStyleId);
             return View(portfolioItem);
         }
 
@@ -82,18 +85,22 @@ namespace KlodTattooWeb.Controllers
                 return NotFound();
             }
 
-            var portfolioItem = await _context.PortfolioItems.FindAsync(id);
+            var portfolioItem = await _context.PortfolioItems
+                .Include(p => p.TattooStyle) // Ensure TattooStyle is loaded
+                .FirstOrDefaultAsync(m => m.Id == id); // Use FirstOrDefaultAsync with Include
+            
             if (portfolioItem == null)
             {
                 return NotFound();
             }
+            ViewData["TattooStyleId"] = new SelectList(await _context.TattooStyles.ToListAsync(), "Id", "Name", portfolioItem.TattooStyleId);
             return View(portfolioItem);
         }
 
         // POST: Admin/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Style,ImageUrl,CreatedAt")] PortfolioItem portfolioItem, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,TattooStyleId,ImageUrl,CreatedAt")] PortfolioItem portfolioItem, IFormFile? imageFile)
         {
             if (id != portfolioItem.Id)
             {
@@ -128,6 +135,7 @@ namespace KlodTattooWeb.Controllers
                         portfolioItem.ImageUrl = "/images/portfolio/" + fileName;
                     }
 
+                    // Only update the properties that were bound and not auto-generated (like CreatedAt or Id)
                     _context.Update(portfolioItem);
                     await _context.SaveChangesAsync();
                 }
@@ -144,6 +152,7 @@ namespace KlodTattooWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["TattooStyleId"] = new SelectList(await _context.TattooStyles.ToListAsync(), "Id", "Name", portfolioItem.TattooStyleId);
             return View(portfolioItem);
         }
 
@@ -156,6 +165,7 @@ namespace KlodTattooWeb.Controllers
             }
 
             var portfolioItem = await _context.PortfolioItems
+                .Include(p => p.TattooStyle) // Include TattooStyle
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (portfolioItem == null)
             {

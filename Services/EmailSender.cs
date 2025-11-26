@@ -2,7 +2,8 @@ using MailKit.Net.Smtp;
 using MailKit;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using KlodTattooWeb.Models; // Assuming EmailSettings is a part of Models or a separate config model
+using KlodTattooWeb.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace KlodTattooWeb.Services
 {
@@ -15,14 +16,14 @@ namespace KlodTattooWeb.Services
             _emailSettings = emailSettings.Value;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             var emailMessage = new MimeMessage();
 
             emailMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart("html") { Text = message };
+            emailMessage.Body = new TextPart("html") { Text = htmlMessage };
 
             using (var client = new SmtpClient())
             {
@@ -44,10 +45,5 @@ namespace KlodTattooWeb.Services
                 }
             }
         }
-    }
-
-    public interface IEmailSender
-    {
-        Task SendEmailAsync(string email, string subject, string message);
     }
 }

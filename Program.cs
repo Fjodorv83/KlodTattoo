@@ -6,13 +6,43 @@ using KlodTattooWeb.Services;
 using KlodTattooWeb.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // ---------------------------
-// Database
+// Configurazione Porta per Railway
 // ---------------------------
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+// ---------------------------
+// Database - Supporto SQLite (dev) e PostgreSQL (prod)
+// ---------------------------
+var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "Sqlite";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Supporto per DATABASE_URL di Railway (PostgreSQL)
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+    // Railway fornisce DATABASE_URL in formato: postgres://user:password@host:port/database
+    // Convertiamo in formato connection string per Npgsql
+    var databaseUri = new Uri(databaseUrl);
+    var userInfo = databaseUri.UserInfo.Split(':');
+
+    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    databaseProvider = "PostgreSQL";
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+{
+    if (databaseProvider == "PostgreSQL")
+    {
+        options.UseNpgsql(connectionString);
+    }
+    else
+    {
+        options.UseSqlite(connectionString);
+    }
+});
 
 // ---------------------------
 // Identity con RUOLI
@@ -39,11 +69,23 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 var app = builder.Build();
 
 // ---------------------------
-// SEED: Ruoli e Admin/User
+// SEED: Ruoli e Admin/User + Migrazione Database
 // ---------------------------
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
+    // Applica migrazioni automaticamente in produzione
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Errore durante l'applicazione delle migrazioni del database");
+    }
 
     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -58,9 +100,10 @@ using (var scope = app.Services.CreateScope())
     }
 
     // ---------------------------
-    // CREA ADMIN
+    // CREA ADMIN (usa variabili d'ambiente in produzione)
     // ---------------------------
-    var adminEmail = "admin@klodtattoo.com";
+    var adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL") ?? "admin@klodtattoo.com";
+    var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "Admin@123";
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
     if (adminUser == null)
@@ -72,7 +115,7 @@ using (var scope = app.Services.CreateScope())
             EmailConfirmed = true
         };
 
-        await userManager.CreateAsync(adminUser, "Admin@123"); // Cambia in produzione
+        await userManager.CreateAsync(adminUser, adminPassword);
         await userManager.AddToRoleAsync(adminUser, "Admin");
     }
 

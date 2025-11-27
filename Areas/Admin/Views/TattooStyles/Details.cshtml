@@ -20,6 +20,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Modifica</a> |
-    <a asp-action="Index">Torna alla Lista</a>
+    <a asp-area="Admin" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifica</a>
+    <a asp-area="Admin" asp-action="Index" class="btn btn-secondary">Torna alla Lista</a>
 </div>

@@ -7,8 +7,12 @@
 
 <h1>Gestione Stili Tatuaggio</h1>
 
+<div class="mb-3">
+    <a asp-area="" asp-controller="Admin" asp-action="Index" class="btn btn-secondary">Torna alla Dashboard Admin</a>
+</div>
+
 <p>
-    <a asp-action="Create">Crea Nuovo Stile</a>
+    <a asp-area="Admin" asp-action="Create" class="btn btn-primary">Crea Nuovo Stile</a>
 </p>
 <table class="table">
     <thead>
@@ -27,9 +31,9 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Modifica</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Dettagli</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Elimina</a>
+                    <a asp-area="Admin" asp-action="Edit" asp-route-id="@item.Id">Modifica</a> |
+                    <a asp-area="Admin" asp-action="Details" asp-route-id="@item.Id">Dettagli</a> |
+                    <a asp-area="Admin" asp-action="Delete" asp-route-id="@item.Id">Elimina</a>
                 </td>
             </tr>
         }

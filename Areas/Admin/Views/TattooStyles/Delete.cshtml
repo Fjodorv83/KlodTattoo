@@ -20,9 +20,9 @@
         </dd>
     </dl>
 
-    <form asp-area="Admin" asp-action="Delete">
+    <form asp-area="Admin" asp-controller="TattooStyles" asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Elimina" class="btn btn-danger" />
-        <a asp-area="Admin" asp-action="Index" class="btn btn-secondary">Annulla</a>
+        <a asp-area="Admin" asp-controller="TattooStyles" asp-action="Index" class="btn btn-secondary">Annulla</a>
     </form>
 </div>

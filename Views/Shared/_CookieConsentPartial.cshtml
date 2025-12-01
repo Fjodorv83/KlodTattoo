@@ -1,34 +1,149 @@
-@using Microsoft.AspNetCore.Http.Features
+@* Cookie Consent Banner - Klod Tattoo Studio *@
 
-@{
-    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
-    var showBanner = !consentFeature?.CanTrack ?? false;
-    var cookieString = consentFeature?.CreateConsentCookie();
-}
+<!-- Overlay per panel personalizzazione -->
+<div id="cookieOverlay"></div>
 
-@if (showBanner)
-{
-    <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <span>Questo sito utilizza i cookie per migliorare l'esperienza dell'utente. <a asp-area="" asp-controller="Home" asp-action="Privacy">Scopri di più</a>.</span>
-                <div>
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
-                        Accetta
-                    </button>
+<!-- Banner Cookie -->
+<div id="cookieConsentBanner" role="dialog" aria-labelledby="cookieBannerTitle" aria-describedby="cookieBannerDesc">
+    <!-- Banner Compatto -->
+    <div class="cookie-banner-compact">
+        <div class="cookie-banner-content">
+            <div class="row align-items-center">
+                <!-- Testo informativo -->
+                <div class="col-lg-7 col-md-12 mb-3 mb-lg-0">
+                    <p class="cookie-banner-text" id="cookieBannerDesc">
+                        <span class="cookie-icon">🍪</span>
+                        <strong id="cookieBannerTitle">Questo sito utilizza cookie</strong><br />
+                        Utilizziamo cookie tecnici necessari per il funzionamento del sito e cookie di funzionalità per migliorare la tua esperienza di navigazione.
+                    </p>
+                    <div class="cookie-links">
+                        <a asp-controller="Home" asp-action="Privacy" class="cookie-link">
+                            <i class="fas fa-shield-alt me-1"></i>Privacy Policy
+                        </a>
+                        <a asp-controller="Home" asp-action="Cookie" class="cookie-link">
+                            <i class="fas fa-cookie-bite me-1"></i>Cookie Policy
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Pulsanti azione -->
+                <div class="col-lg-5 col-md-12">
+                    <div class="cookie-buttons justify-content-lg-end">
+                        <button type="button" id="cookieAcceptAll" class="cookie-btn cookie-btn-accept" aria-label="Accetta tutti i cookie">
+                            <i class="fas fa-check me-1"></i>Accetta Tutto
+                        </button>
+                        <button type="button" id="cookieReject" class="cookie-btn cookie-btn-reject" aria-label="Rifiuta cookie opzionali">
+                            <i class="fas fa-times me-1"></i>Rifiuta
+                        </button>
+                        <button type="button" id="cookieCustomize" class="cookie-btn cookie-btn-customize" aria-label="Personalizza preferenze cookie">
+                            <i class="fas fa-cog me-1"></i>Personalizza
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var acceptButton = document.querySelector("#cookieConsent button[data-cookie-string]");
-            if (acceptButton) {
-                acceptButton.addEventListener("click", function () {
-                    document.cookie = this.dataset.cookieString;
-                });
-            }
-        });
-    </script>
-}
+<!-- Panel Personalizzazione -->
+<div id="cookieCustomizePanel" role="dialog" aria-labelledby="customizePanelTitle" aria-modal="true" tabindex="-1">
+    <!-- Header -->
+    <div class="cookie-panel-header">
+        <h2 class="cookie-panel-title" id="customizePanelTitle">
+            <i class="fas fa-cookie-bite me-2"></i>Gestisci Preferenze Cookie
+        </h2>
+        <button type="button" id="cookieClosePanel" class="cookie-close-btn" aria-label="Chiudi pannello">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Descrizione -->
+    <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 1.5rem;">
+        Scegli quali categorie di cookie accettare. I cookie tecnici necessari sono sempre attivi per garantire il funzionamento base del sito.
+    </p>
+
+    <!-- Categoria 1: Cookie Tecnici Necessari -->
+    <div class="cookie-category">
+        <div class="cookie-category-header">
+            <h3 class="cookie-category-title">
+                <i class="fas fa-shield-alt me-2" style="color: #28a745;"></i>
+                Cookie Tecnici Necessari
+                <span class="cookie-category-badge always-active">Sempre Attivi</span>
+            </h3>
+            <label class="cookie-toggle">
+                <input type="checkbox" checked disabled aria-label="Cookie tecnici necessari sempre attivi">
+                <span class="cookie-toggle-slider"></span>
+            </label>
+        </div>
+        <p class="cookie-category-description">
+            Questi cookie sono essenziali per il corretto funzionamento del sito web. Includono cookie di sessione,
+            autenticazione e sicurezza. Non possono essere disattivati.
+        </p>
+        <small style="color: #888; font-size: 0.75rem;">
+            <strong>Esempi:</strong> .AspNet.Consent, cookie di sessione, anti-forgery tokens
+        </small>
+    </div>
+
+    <!-- Categoria 2: Cookie di Funzionalità -->
+    <div class="cookie-category">
+        <div class="cookie-category-header">
+            <h3 class="cookie-category-title">
+                <i class="fas fa-paint-brush me-2" style="color: #d4af37;"></i>
+                Cookie di Funzionalità
+                <span class="cookie-category-badge">Opzionali</span>
+            </h3>
+            <label class="cookie-toggle">
+                <input type="checkbox" id="cookieFunctional" aria-label="Abilita cookie di funzionalità">
+                <span class="cookie-toggle-slider"></span>
+            </label>
+        </div>
+        <p class="cookie-category-description">
+            Questi cookie permettono funzionalità avanzate come visualizzazione lightbox delle immagini del portfolio,
+            animazioni durante lo scroll e altre funzionalità che migliorano l'esperienza utente.
+        </p>
+        <small style="color: #888; font-size: 0.75rem;">
+            <strong>Funzionalità:</strong> GLightbox (galleria immagini), AOS (animazioni), preferenze UI
+        </small>
+    </div>
+
+    <!-- Categoria 3: Cookie Analitici (preparato per futuro) -->
+    <div class="cookie-category" style="opacity: 0.7;">
+        <div class="cookie-category-header">
+            <h3 class="cookie-category-title">
+                <i class="fas fa-chart-bar me-2" style="color: #6c757d;"></i>
+                Cookie Analitici
+                <span class="cookie-category-badge not-used">Non Utilizzati</span>
+            </h3>
+            <label class="cookie-toggle">
+                <input type="checkbox" id="cookieAnalytics" disabled aria-label="Cookie analitici non disponibili">
+                <span class="cookie-toggle-slider"></span>
+            </label>
+        </div>
+        <p class="cookie-category-description">
+            Al momento non utilizziamo cookie analitici o di tracciamento. Questa categoria è preparata per un futuro
+            eventuale utilizzo di strumenti come Google Analytics per comprendere come i visitatori utilizzano il sito.
+        </p>
+        <small style="color: #888; font-size: 0.75rem;">
+            <strong>Stato:</strong> Nessun cookie analitico attivo
+        </small>
+    </div>
+
+    <!-- Pulsanti azione panel -->
+    <div class="cookie-panel-buttons">
+        <button type="button" id="cookieSaveCustom" class="cookie-btn cookie-btn-customize" aria-label="Salva le tue preferenze">
+            <i class="fas fa-save me-1"></i>Salva Preferenze
+        </button>
+        <button type="button" id="cookieAcceptAllCustom" class="cookie-btn cookie-btn-accept" aria-label="Accetta tutti i cookie">
+            <i class="fas fa-check me-1"></i>Accetta Tutto
+        </button>
+    </div>
+
+    <!-- Link utili -->
+    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
+        <p style="color: #888; font-size: 0.8rem; margin: 0;">
+            Per maggiori informazioni consulta la nostra
+            <a asp-controller="Home" asp-action="Cookie" style="color: #d4af37;">Cookie Policy</a> e
+            <a asp-controller="Home" asp-action="Privacy" style="color: #d4af37;">Privacy Policy</a>
+        </p>
+    </div>
+</div>

@@ -150,7 +150,7 @@ using (var scope = app.Services.CreateScope())
     // ---------------------------
     // SEED: Tattoo Styles
     // ---------------------------
-    string[] tattooStyleNames = { "Realistic", "Fine line", "black art", "Lettering", "small" };
+    string[] tattooStyleNames = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons","Animals" };
 
     foreach (var styleName in tattooStyleNames)
     {

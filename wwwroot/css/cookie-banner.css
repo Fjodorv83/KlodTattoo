@@ -1,0 +1,427 @@
+/* Cookie Banner Styles - Klod Tattoo Studio */
+
+/* Banner principale */
+#cookieConsentBanner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    display: none;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+#cookieConsentBanner.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Banner compatto */
+.cookie-banner-compact {
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-top: 3px solid #d4af37;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+    padding: 1.5rem 0;
+}
+
+.cookie-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.cookie-banner-text {
+    color: #ffffff;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.cookie-banner-text .cookie-icon {
+    font-size: 1.5rem;
+    color: #d4af37;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.cookie-banner-text strong {
+    color: #d4af37;
+    font-weight: 600;
+}
+
+.cookie-links {
+    margin-top: 0.5rem;
+}
+
+.cookie-link {
+    color: #d4af37;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+}
+
+.cookie-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* Pulsanti */
+.cookie-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.cookie-btn {
+    padding: 0.65rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cookie-btn-accept {
+    background: linear-gradient(135deg, #d4af37 0%, #c9a22e 100%);
+    color: #000;
+}
+
+.cookie-btn-accept:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+}
+
+.cookie-btn-reject {
+    background: #555;
+    color: #fff;
+}
+
+.cookie-btn-reject:hover {
+    background: #666;
+}
+
+.cookie-btn-customize {
+    background: transparent;
+    color: #fff;
+    border: 2px solid #d4af37;
+}
+
+.cookie-btn-customize:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+/* Overlay */
+#cookieOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    display: none;
+    backdrop-filter: blur(5px);
+}
+
+/* Panel personalizzazione */
+#cookieCustomizePanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(26, 26, 26, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 2px solid #d4af37;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    z-index: 10000;
+    display: none;
+    padding: 2rem;
+}
+
+.cookie-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.cookie-panel-title {
+    color: #d4af37;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.cookie-close-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.cookie-close-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+    color: #d4af37;
+    transform: rotate(90deg);
+}
+
+/* Categorie cookie */
+.cookie-category {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.cookie-category:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.cookie-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.cookie-category-title {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cookie-category-badge {
+    background: #d4af37;
+    color: #000;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.cookie-category-badge.always-active {
+    background: #28a745;
+}
+
+.cookie-category-badge.not-used {
+    background: #6c757d;
+}
+
+.cookie-category-description {
+    color: #aaa;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Toggle Switch */
+.cookie-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.cookie-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.cookie-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: 0.4s;
+    border-radius: 26px;
+}
+
+.cookie-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.cookie-toggle input:checked + .cookie-toggle-slider {
+    background-color: #d4af37;
+}
+
+.cookie-toggle input:checked + .cookie-toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.cookie-toggle input:disabled + .cookie-toggle-slider {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Pulsanti panel */
+.cookie-panel-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.cookie-panel-buttons .cookie-btn {
+    flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cookie-banner-content {
+        padding: 0 1rem;
+    }
+
+    .cookie-buttons {
+        flex-direction: column;
+    }
+
+    .cookie-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    #cookieCustomizePanel {
+        width: 95%;
+        max-height: 90vh;
+        padding: 1.5rem;
+    }
+
+    .cookie-panel-title {
+        font-size: 1.25rem;
+    }
+
+    .cookie-panel-buttons {
+        flex-direction: column;
+    }
+
+    .cookie-category {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cookie-banner-text {
+        font-size: 0.85rem;
+    }
+
+    .cookie-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    #cookieCustomizePanel {
+        padding: 1rem;
+    }
+
+    .cookie-panel-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Animazioni */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Scrollbar custom per il panel */
+#cookieCustomizePanel::-webkit-scrollbar {
+    width: 8px;
+}
+
+#cookieCustomizePanel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+#cookieCustomizePanel::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 10px;
+}
+
+#cookieCustomizePanel::-webkit-scrollbar-thumb:hover {
+    background: #c9a22e;
+}
+
+/* Accessibilità */
+.cookie-btn:focus,
+.cookie-close-btn:focus,
+.cookie-toggle input:focus + .cookie-toggle-slider {
+    outline: 2px solid #d4af37;
+    outline-offset: 2px;
+}
+
+/* Stato visually hidden per screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}

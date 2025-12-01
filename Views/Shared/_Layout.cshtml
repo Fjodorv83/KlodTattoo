@@ -22,6 +22,9 @@
     
     <!-- GLightbox -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+
+    <!-- Cookie Banner CSS -->
+    <link rel="stylesheet" href="~/css/cookie-banner.css" asp-append-version="true" />
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -242,6 +245,9 @@
                     <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none small me-3 hover-gold">
                         <i class="fas fa-shield-alt me-1"></i>Privacy Policy
                     </a>
+                    <a asp-controller="Home" asp-action="Cookie" class="text-muted text-decoration-none small me-3 hover-gold">
+                        <i class="fas fa-cookie-bite me-1"></i>Cookie Policy
+                    </a>
                     <a href="#" class="text-muted text-decoration-none small hover-gold">
                         <i class="fas fa-file-contract me-1"></i>Termini di Servizio
                     </a>
@@ -260,7 +266,10 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
-    
+
+    <!-- Cookie Consent JS -->
+    <script src="~/js/cookie-consent.js" asp-append-version="true"></script>
+
     <script>
         // GLightbox initialization
         const lightbox = GLightbox({

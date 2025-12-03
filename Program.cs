@@ -147,12 +147,38 @@ using (var scope = app.Services.CreateScope())
             logger.LogInformation($"🔗 Connection string: {censored}");
         }
 
-        // Verifica connessione
-        var canConnect = await dbContext.Database.CanConnectAsync();
-        logger.LogInformation($"📡 Connessione database: {(canConnect ? "OK ✅" : "FALLITA ❌")}");
+        // Verifica connessione con retry
+        bool canConnect = false;
+        int maxRetries = 5;
+        int retryDelay = 2000; // 2 secondi
+
+        for (int i = 0; i < maxRetries; i++)
+        {
+            try
+            {
+                canConnect = await dbContext.Database.CanConnectAsync();
+                if (canConnect)
+                {
+                    logger.LogInformation($"📡 Connessione database: OK ✅");
+                    break;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning($"⚠️ Tentativo {i + 1}/{maxRetries} fallito: {ex.Message}");
+                if (i < maxRetries - 1)
+                {
+                    logger.LogInformation($"⏳ Attendo {retryDelay}ms prima di ritentare...");
+                    await Task.Delay(retryDelay);
+                }
+            }
+        }
 
         if (!canConnect)
         {
+            logger.LogError("❌ Impossibile connettersi al database dopo tutti i tentativi");
+            logger.LogError("💡 Verifica che DATABASE_URL sia configurata correttamente su Railway");
+            logger.LogError("💡 Controlla che il servizio PostgreSQL sia attivo e collegato");
             throw new Exception("Impossibile connettersi al database");
         }
 

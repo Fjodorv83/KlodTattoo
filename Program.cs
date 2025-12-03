@@ -23,29 +23,42 @@ var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider"
 string? connectionString = null;
 
 // PRIORITÀ 1: Controlla DATABASE_URL (Railway/produzione)
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
+                 ?? Environment.GetEnvironmentVariable("RAILWAY_DATABASE_URL");
+
 if (!string.IsNullOrEmpty(databaseUrl))
 {
-    try 
+    try
     {
-        // Railway fornisce DATABASE_URL in formato: postgres://user:password@host:port/database
-        // Convertiamo in formato connection string per Npgsql
-        var databaseUri = new Uri(databaseUrl);
-        var userInfo = databaseUri.UserInfo.Split(new[] { ':' }, 2);
-        var username = userInfo[0];
-        var password = userInfo.Length > 1 ? userInfo[1] : "";
+        // Alcune piattaforme usano "postgres://" altre "postgresql://"
+        if (databaseUrl.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+        {
+            databaseUrl = "postgresql://" + databaseUrl.Substring("postgres://".Length);
+        }
 
-        connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+        var databaseUri = new Uri(databaseUrl);
+
+        var userInfo = databaseUri.UserInfo.Split(new[] { ':' }, 2);
+        var username = Uri.UnescapeDataString(userInfo[0]);
+        var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+
+        var host = databaseUri.Host;
+        var dbport = databaseUri.IsDefaultPort ? 5432 : databaseUri.Port;
+        var database = databaseUri.AbsolutePath.TrimStart('/');
+
+        connectionString =
+            $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+
         databaseProvider = "PostgreSQL";
-        
-        // Log (masked) connection string for debugging
-        Console.WriteLine($"✅ Usando DATABASE_URL di Railway: {databaseUri.Host}");
+
+        Console.WriteLine($"✅ Usando DATABASE_URL di Railway: host={host}, db={database}");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Errore nel parsing di DATABASE_URL: {ex.Message}");
+        Console.WriteLine($"❌ Errore nel parsing di DATABASE_URL: {ex}");
     }
 }
+
 else
 {
     // PRIORITÀ 2: Locale - usa appsettings.json

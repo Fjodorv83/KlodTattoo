@@ -139,6 +139,23 @@ var app = builder.Build();
 // MIGRATIONS
 // ---------------------------------------------------------------------
 using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var db = services.GetRequiredService<AppDbContext>();
+        // Test connessione prima di migrare
+        Console.WriteLine($"🔄 Tentativo migrazione DB su Provider: {db.Database.ProviderName}");
+
+        await db.Database.MigrateAsync();
+        logger.LogInformation("📦 Database migrato correttamente");
+
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        string[] roles = { "Admin", "User" };
+        foreach (var role in roles)
+            if (!await roleManager.RoleExistsAsync(role))
+                await roleManager.CreateAsync(new IdentityRole(role));
 
         // ... (Seed user e tattoo styles omessi per brevità, se funzionano le migrazioni funzionerà anche questo)
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();

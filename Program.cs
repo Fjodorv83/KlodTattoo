@@ -43,11 +43,11 @@ if (!string.IsNullOrEmpty(databaseUrl))
         var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
 
         var host = databaseUri.Host;
-        var dbport = databaseUri.IsDefaultPort ? 5432 : databaseUri.Port;
+        var dbport = databaseUri.Port > 0 ? databaseUri.Port : 5432;
         var database = databaseUri.AbsolutePath.TrimStart('/');
 
         connectionString =
-            $"Host={host};Port={dbport};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+            $"Host={host};Port={dbport};Database={database};Username={username};Password={password};SSL Mode=Prefer;Trust Server Certificate=true";
 
         databaseProvider = "PostgreSQL";
 

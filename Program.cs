@@ -27,22 +27,27 @@ builder.WebHost.UseUrls($"http://*:{port}");
 var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "Sqlite";
 string? connectionString = null;
 
-// 🔥 Railway: usa RAILWAY_DATABASE_URL
-var dbUrl = Environment.GetEnvironmentVariable("RAILWAY_DATABASE_URL");
+// 🔥 Railway: Cerca sia DATABASE_URL (standard) che RAILWAY_DATABASE_URL
+var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
+            ?? Environment.GetEnvironmentVariable("RAILWAY_DATABASE_URL");
 
 if (!string.IsNullOrEmpty(dbUrl))
 {
+    // Railway fornisce spesso l'URL come "postgres://", Npgsql vuole "postgresql://"
     if (dbUrl.StartsWith("postgres://"))
         dbUrl = dbUrl.Replace("postgres://", "postgresql://");
 
     var uri = new Uri(dbUrl);
+    var userInfo = uri.UserInfo.Split(':');
+    var username = userInfo[0];
+    var password = userInfo.Length > 1 ? userInfo[1] : "";
 
     connectionString =
         $"Host={uri.Host};" +
         $"Port={uri.Port};" +
         $"Database={uri.AbsolutePath.TrimStart('/')};" +
-        $"Username={uri.UserInfo.Split(':')[0]};" +
-        $"Password={uri.UserInfo.Split(':')[1]};" +
+        $"Username={username};" +
+        $"Password={password};" +
         $"SSL Mode=Require;Trust Server Certificate=true";
 
     databaseProvider = "PostgreSQL";
@@ -63,14 +68,12 @@ else
     }
 }
 
+// Configurazione DbContext semplificata usando i valori calcolati sopra
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
-              ?? Environment.GetEnvironmentVariable("RAILWAY_DATABASE_URL");
-
-    if (!string.IsNullOrEmpty(dbUrl))
+    if (databaseProvider == "PostgreSQL")
     {
-        // Produzione → Railway → PostgreSQL
+        // Produzione o Locale PostgreSQL
         options.UseNpgsql(connectionString);
     }
     else

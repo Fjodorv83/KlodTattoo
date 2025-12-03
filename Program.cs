@@ -22,12 +22,12 @@ var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
 
 // ---------------------------------------------------------------------
-// Database: SQLite (dev) / PostgreSQL (production)
+// Database Strategy
 // ---------------------------------------------------------------------
-var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "Sqlite";
+var databaseProvider = "Sqlite"; // Default
 string? connectionString = null;
 
-// 🔥 Railway: Cerca sia DATABASE_URL (standard) che RAILWAY_DATABASE_URL
+// 1. Cerca variabili d'ambiente (Railway/Produzione)
 var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
             ?? Environment.GetEnvironmentVariable("RAILWAY_DATABASE_URL");
 
@@ -51,35 +51,37 @@ if (!string.IsNullOrEmpty(dbUrl))
         $"SSL Mode=Require;Trust Server Certificate=true";
 
     databaseProvider = "PostgreSQL";
-    Console.WriteLine("🐘 Usando PostgreSQL Railway");
+    Console.WriteLine("🐘 Usando PostgreSQL (da Variabili Ambiente)");
 }
 else
 {
-    // locale
-    if (databaseProvider == "PostgreSQL")
+    // 2. Fallback su configurazione locale (appsettings.json)
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    // Auto-detect: se la stringa contiene "Host=", è sicuramente Postgres
+    if (!string.IsNullOrEmpty(connectionString) &&
+       (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) ||
+        connectionString.Contains("postgres", StringComparison.OrdinalIgnoreCase)))
     {
-        connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-        Console.WriteLine("🐘 Usando PostgreSQL locale");
+        databaseProvider = "PostgreSQL";
+        Console.WriteLine("🐘 Usando PostgreSQL (da appsettings.json)");
     }
     else
     {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Console.WriteLine("🗄️ Usando SQLite locale");
+        Console.WriteLine("🗄️ Usando SQLite (default)");
     }
 }
 
-// Configurazione DbContext semplificata usando i valori calcolati sopra
+// Configurazione DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (databaseProvider == "PostgreSQL")
     {
-        // Produzione o Locale PostgreSQL
         options.UseNpgsql(connectionString);
     }
     else
     {
-        // Locale → SQLite
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.UseSqlite(connectionString ?? builder.Configuration.GetConnectionString("DefaultConnection"));
     }
 });
 
@@ -135,7 +137,8 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         logger.LogError(ex, "❌ Errore durante la migration del database");
-        throw;
+        // Non blocchiamo l'app se la migrazione fallisce (opzionale)
+        // throw; 
     }
 
     // Ruoli
@@ -151,8 +154,9 @@ using (var scope = app.Services.CreateScope())
     if (await userManager.FindByEmailAsync(adminEmail) is null)
     {
         var admin = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
-        await userManager.CreateAsync(admin, adminPass);
-        await userManager.AddToRoleAsync(admin, "Admin");
+        var result = await userManager.CreateAsync(admin, adminPass);
+        if (result.Succeeded)
+            await userManager.AddToRoleAsync(admin, "Admin");
     }
 
     // Seed Tattoo Styles
@@ -182,12 +186,10 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-// Areas
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-// Default
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

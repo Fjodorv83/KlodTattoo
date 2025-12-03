@@ -22,20 +22,21 @@ var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
 
 // ---------------------------------------------------------------------
-// DATABASE STRATEGY (Auto-Detect)
+// 1. RILEVAMENTO DATABASE (Railway vs Locale)
 // ---------------------------------------------------------------------
-// 1. Cerchiamo le variabili d'ambiente (Priorità Railway)
+string? connectionString = null;
+string databaseProvider = "Sqlite"; // Default
+
+// Cerca la variabile d'ambiente (Railway usa DATABASE_URL)
 var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
             ?? Environment.GetEnvironmentVariable("RAILWAY_DATABASE_URL");
 
-string? connectionString = null;
-string databaseProvider = "Sqlite"; // Default temporaneo
-
 if (!string.IsNullOrEmpty(dbUrl))
 {
-    // CASO 1: Siamo su Railway (o c'è la variabile)
+    // SIAMO SU RAILWAY
     try
     {
+        // Normalizza schema (postgres:// -> postgresql://)
         if (dbUrl.StartsWith("postgres://"))
             dbUrl = dbUrl.Replace("postgres://", "postgresql://");
 
@@ -44,6 +45,7 @@ if (!string.IsNullOrEmpty(dbUrl))
         var username = userInfo[0];
         var password = userInfo.Length > 1 ? userInfo[1] : "";
 
+        // Costruisci la stringa di connessione corretta per Npgsql
         connectionString =
             $"Host={uri.Host};" +
             $"Port={uri.Port};" +
@@ -53,39 +55,40 @@ if (!string.IsNullOrEmpty(dbUrl))
             $"SSL Mode=Require;Trust Server Certificate=true";
 
         databaseProvider = "PostgreSQL";
-        Console.WriteLine("🐘 [Boot] Usando PostgreSQL (da Variabili Ambiente)");
+        Console.WriteLine($"🐘 [Boot] Configurazione Railway rilevata. Host: {uri.Host}");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"⚠️ [Boot] Errore parsing DATABASE_URL: {ex.Message}. Fallback su appsettings.");
+        Console.WriteLine($"⚠️ [Boot] Errore parsing DATABASE_URL: {ex.Message}");
     }
 }
-
-// 2. Se non abbiamo ancora una stringa valida, usiamo appsettings.json
-if (string.IsNullOrEmpty(connectionString))
+else
 {
+    // SIAMO IN LOCALE
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    // ANALISI INTELLIGENTE: Se la stringa contiene "Host=", è sicuramente Postgres!
+    // Auto-detect: se la stringa locale contiene "Host=", stiamo usando Postgres locale
     if (!string.IsNullOrEmpty(connectionString) &&
        (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) ||
         connectionString.Contains("postgres", StringComparison.OrdinalIgnoreCase)))
     {
         databaseProvider = "PostgreSQL";
-        Console.WriteLine("🐘 [Boot] Usando PostgreSQL (da appsettings.json)");
+        Console.WriteLine("🐘 [Boot] Configurazione Locale (PostgreSQL)");
     }
     else
     {
-        databaseProvider = "Sqlite";
-        Console.WriteLine("🗄️ [Boot] Usando SQLite (default)");
+        Console.WriteLine("🗄️ [Boot] Configurazione Locale (SQLite)");
     }
 }
 
-// 3. Configurazione DbContext in base al provider rilevato
+// ---------------------------------------------------------------------
+// 2. CONFIGURAZIONE DbContext
+// ---------------------------------------------------------------------
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (databaseProvider == "PostgreSQL")
     {
+        // Usa la connectionString calcolata sopra (che ora è corretta!)
         options.UseNpgsql(connectionString);
     }
     else

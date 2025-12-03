@@ -20,7 +20,11 @@ builder.WebHost.UseUrls($"http://*:{port}");
 // Database - Supporto SQLite (dev) e PostgreSQL (prod)
 // ---------------------------
 var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "Sqlite";
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Scegli la connection string in base al provider
+var connectionString = databaseProvider == "PostgreSQL"
+    ? builder.Configuration.GetConnectionString("PostgreSQL")
+    : builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Supporto per DATABASE_URL di Railway (PostgreSQL)
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
@@ -172,7 +176,7 @@ using (var scope = app.Services.CreateScope())
     // ---------------------------
     // SEED: Tattoo Styles
     // ---------------------------
-    string[] tattooStyleNames = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons","Animals" };
+    string[] tattooStyleNames = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons","Animals", "Tribals" };
 
     foreach (var styleName in tattooStyleNames)
     {

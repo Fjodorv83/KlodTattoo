@@ -166,11 +166,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+// 🔥 FORZIAMO LA PAGINA DI ERRORE DETTAGLIATA (DEBUG)
+app.UseDeveloperExceptionPage();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

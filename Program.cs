@@ -47,7 +47,7 @@ if (!string.IsNullOrEmpty(databaseUrl))
         var database = databaseUri.AbsolutePath.TrimStart('/');
 
         connectionString =
-            $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+            $"Host={host};Port={dbport};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
 
         databaseProvider = "PostgreSQL";
 

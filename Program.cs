@@ -1,4 +1,4 @@
-using KlodTattooWeb.Data;
+﻿using KlodTattooWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -20,33 +20,52 @@ builder.WebHost.UseUrls($"http://*:{port}");
 // Database - Supporto SQLite (dev) e PostgreSQL (prod)
 // ---------------------------
 var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "Sqlite";
+string? connectionString = null;
 
-// Scegli la connection string in base al provider
-var connectionString = databaseProvider == "PostgreSQL"
-    ? builder.Configuration.GetConnectionString("PostgreSQL")
-    : builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Supporto per DATABASE_URL di Railway (PostgreSQL)
+// PRIORITÀ 1: Controlla DATABASE_URL (Railway/produzione)
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 if (!string.IsNullOrEmpty(databaseUrl))
 {
-    // Railway fornisce DATABASE_URL in formato: postgres://user:password@host:port/database
-    // Convertiamo in formato connection string per Npgsql
+    // Railway/produzione: converte DATABASE_URL in connection string
     var databaseUri = new Uri(databaseUrl);
     var userInfo = databaseUri.UserInfo.Split(':');
 
     connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
     databaseProvider = "PostgreSQL";
+
+    Console.WriteLine($"✅ Usando DATABASE_URL di Railway: {databaseUri.Host}");
+}
+else
+{
+    // PRIORITÀ 2: Locale - usa appsettings.json
+    if (databaseProvider == "PostgreSQL")
+    {
+        connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+        Console.WriteLine("✅ Usando PostgreSQL locale da appsettings.json");
+    }
+    else
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        Console.WriteLine("✅ Usando SQLite locale da appsettings.json");
+    }
+}
+
+// Verifica che ci sia una connection string
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("❌ Nessuna connection string configurata!");
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (databaseProvider == "PostgreSQL")
     {
+        Console.WriteLine($"🐘 Configurando PostgreSQL");
         options.UseNpgsql(connectionString);
     }
     else
     {
+        Console.WriteLine($"🗄️ Configurando SQLite");
         options.UseSqlite(connectionString);
     }
 });
@@ -104,22 +123,72 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 var app = builder.Build();
 
 // ---------------------------
-// SEED: Ruoli e Admin/User + Migrazione Database
+// SEED: Ruoli e Admin/User + Verifica Database
 // ---------------------------
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<AppDbContext>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
 
-    // Applica migrazioni automaticamente in produzione
+    // Verifica e crea il database se non esiste
     try
     {
-        dbContext.Database.Migrate();
+        // DEBUG: Mostra quale connection string viene usata (CENSURA LA PASSWORD!)
+        var connString = dbContext.Database.GetConnectionString();
+        if (!string.IsNullOrEmpty(connString))
+        {
+            // Censura la password nel log
+            var censored = System.Text.RegularExpressions.Regex.Replace(
+                connString,
+                @"Password=([^;]+)",
+                "Password=***"
+            );
+            logger.LogInformation($"🔗 Connection string: {censored}");
+        }
+
+        // Verifica connessione
+        var canConnect = await dbContext.Database.CanConnectAsync();
+        logger.LogInformation($"📡 Connessione database: {(canConnect ? "OK ✅" : "FALLITA ❌")}");
+
+        if (!canConnect)
+        {
+            throw new Exception("Impossibile connettersi al database");
+        }
+
+        // Crea database e tabelle se non esistono (NON elimina dati esistenti)
+        var created = await dbContext.Database.EnsureCreatedAsync();
+
+        if (created)
+        {
+            logger.LogInformation("🆕 Database creato da zero");
+        }
+        else
+        {
+            logger.LogInformation("✅ Database già esistente, nessuna modifica effettuata");
+        }
+
+        // Conta record esistenti
+        var userCount = await dbContext.Users.CountAsync();
+        var bookingCount = await dbContext.BookingRequests.CountAsync();
+        var portfolioCount = await dbContext.PortfolioItems.CountAsync();
+        var styleCount = await dbContext.TattooStyles.CountAsync();
+
+        logger.LogInformation("📊 Contenuto database:");
+        logger.LogInformation($"   👥 Utenti: {userCount}");
+        logger.LogInformation($"   📅 Prenotazioni: {bookingCount}");
+        logger.LogInformation($"   🎨 Portfolio: {portfolioCount}");
+        logger.LogInformation($"   ✨ Stili: {styleCount}");
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Errore durante l'applicazione delle migrazioni del database");
+        logger.LogError(ex, "❌ ERRORE CRITICO durante la verifica del database");
+        logger.LogError($"Messaggio: {ex.Message}");
+        if (ex.InnerException != null)
+        {
+            logger.LogError($"Dettaglio: {ex.InnerException.Message}");
+        }
+        throw; // Ferma l'applicazione se il database non funziona
     }
 
     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
@@ -131,7 +200,10 @@ using (var scope = app.Services.CreateScope())
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
+        {
             await roleManager.CreateAsync(new IdentityRole(role));
+            logger.LogInformation($"🔐 Ruolo '{role}' creato");
+        }
     }
 
     // ---------------------------
@@ -150,8 +222,16 @@ using (var scope = app.Services.CreateScope())
             EmailConfirmed = true
         };
 
-        await userManager.CreateAsync(adminUser, adminPassword);
-        await userManager.AddToRoleAsync(adminUser, "Admin");
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+            logger.LogInformation($"👤 Admin creato: {adminEmail}");
+        }
+        else
+        {
+            logger.LogWarning($"⚠️ Impossibile creare admin: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+        }
     }
 
     // ---------------------------
@@ -169,14 +249,18 @@ using (var scope = app.Services.CreateScope())
             EmailConfirmed = true
         };
 
-        await userManager.CreateAsync(defaultUser, "User@123");
-        await userManager.AddToRoleAsync(defaultUser, "User");
+        var result = await userManager.CreateAsync(defaultUser, "User@123");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(defaultUser, "User");
+            logger.LogInformation($"👤 User standard creato: {defaultEmail}");
+        }
     }
 
     // ---------------------------
     // SEED: Tattoo Styles
     // ---------------------------
-    string[] tattooStyleNames = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons","Animals", "Tribals" };
+    string[] tattooStyleNames = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons", "Animals", "Tribals" };
 
     foreach (var styleName in tattooStyleNames)
     {
@@ -185,7 +269,14 @@ using (var scope = app.Services.CreateScope())
             dbContext.TattooStyles.Add(new TattooStyle { Name = styleName });
         }
     }
-    await dbContext.SaveChangesAsync();
+
+    var savedChanges = await dbContext.SaveChangesAsync();
+    if (savedChanges > 0)
+    {
+        logger.LogInformation($"✨ {savedChanges} stili tatuaggio aggiunti");
+    }
+
+    logger.LogInformation("🎉 Inizializzazione database completata con successo!");
 }
 
 // ---------------------------

@@ -55,13 +55,13 @@ if (!string.IsNullOrEmpty(dbEnvVar))
     catch (Exception ex)
     {
         Console.WriteLine($"⚠️ [BOOT] Errore parsing URL Railway: {ex.Message}. Uso stringa locale.");
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
     }
 }
 else
 {
     // CASO 2: LOCALE (Sviluppo)
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
     Console.WriteLine("🐘 [BOOT] Configurazione Locale (PostgreSQL)");
 }
 

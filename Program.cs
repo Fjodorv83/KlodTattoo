@@ -26,14 +26,25 @@ string? connectionString = null;
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 if (!string.IsNullOrEmpty(databaseUrl))
 {
-    // Railway/produzione: converte DATABASE_URL in connection string
-    var databaseUri = new Uri(databaseUrl);
-    var userInfo = databaseUri.UserInfo.Split(':');
+    try 
+    {
+        // Railway fornisce DATABASE_URL in formato: postgres://user:password@host:port/database
+        // Convertiamo in formato connection string per Npgsql
+        var databaseUri = new Uri(databaseUrl);
+        var userInfo = databaseUri.UserInfo.Split(new[] { ':' }, 2);
+        var username = userInfo[0];
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
 
-    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
-    databaseProvider = "PostgreSQL";
-
-    Console.WriteLine($"✅ Usando DATABASE_URL di Railway: {databaseUri.Host}");
+        connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+        databaseProvider = "PostgreSQL";
+        
+        // Log (masked) connection string for debugging
+        Console.WriteLine($"✅ Usando DATABASE_URL di Railway: {databaseUri.Host}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Errore nel parsing di DATABASE_URL: {ex.Message}");
+    }
 }
 else
 {
@@ -286,23 +297,23 @@ using (var scope = app.Services.CreateScope())
     // ---------------------------
     // SEED: Tattoo Styles
     // ---------------------------
-    string[] tattooStyleNames = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons", "Animals", "Tribals" };
-
-    foreach (var styleName in tattooStyleNames)
+    try 
     {
-        if (!await dbContext.TattooStyles.AnyAsync(s => s.Name == styleName))
+        string[] tattooStyleNames = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons","Animals" };
+
+        foreach (var styleName in tattooStyleNames)
         {
-            dbContext.TattooStyles.Add(new TattooStyle { Name = styleName });
+            if (!await dbContext.TattooStyles.AnyAsync(s => s.Name == styleName))
+            {
+                dbContext.TattooStyles.Add(new TattooStyle { Name = styleName });
+            }
         }
+        await dbContext.SaveChangesAsync();
     }
-
-    var savedChanges = await dbContext.SaveChangesAsync();
-    if (savedChanges > 0)
+    catch (Exception ex)
     {
-        logger.LogInformation($"✨ {savedChanges} stili tatuaggio aggiunti");
+        logger.LogError(ex, "Errore durante il seeding del database (TattooStyles). Assicurati che il database sia raggiungibile.");
     }
-
-    logger.LogInformation("🎉 Inizializzazione database completata con successo!");
 }
 
 // ---------------------------

@@ -104,7 +104,7 @@ var app = builder.Build();
 app.UseDeveloperExceptionPage();
 
 // ---------------------------------------------------------------------
-// MIGRATIONS
+// MIGRATIONS - ESEGUIRE SEMPRE PRIMA DI TUTTO IL RESTO
 // ---------------------------------------------------------------------
 using (var scope = app.Services.CreateScope())
 {

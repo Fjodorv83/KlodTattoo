@@ -107,16 +107,36 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+// ----------------------------------------------------------
+// MIDDLEWARE CONFIGURATION
+// ----------------------------------------------------------
 if (app.Environment.IsDevelopment())
+{
     app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    // NON usare HSTS in produzione con Railway - gestiscono loro HTTPS
+    // app.UseHsts();
+}
 
-app.UseHttpsRedirection();
+// IMPORTANTE: Disabilita HTTPS redirect su Railway
+// Railway gestisce HTTPS tramite il loro proxy
+if (!app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 app.UseAuthentication();
 app.UseAuthorization();
 
+// ----------------------------------------------------------
+// DATABASE SEEDING
+// ----------------------------------------------------------
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -128,24 +148,34 @@ using (var scope = app.Services.CreateScope())
 
         var pendingMigrations = await db.Database.GetPendingMigrationsAsync();
         if (pendingMigrations.Any())
+        {
+            Console.WriteLine("🔄 Applicazione migrazioni...");
             await db.Database.MigrateAsync();
+        }
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         string[] roles = { "Admin", "User" };
 
         foreach (var role in roles)
+        {
             if (!await roleManager.RoleExistsAsync(role))
+            {
+                Console.WriteLine($"➕ Creazione ruolo: {role}");
                 await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
 
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
         var adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL") ?? "admin@klodtattoo.com";
         var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "Admin@123!Strong";
 
+        Console.WriteLine($"🔍 Controllo admin con email: {adminEmail}");
         var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
 
         if (existingAdmin == null)
         {
+            Console.WriteLine("👤 Creazione nuovo admin...");
             var admin = new IdentityUser
             {
                 UserName = adminEmail,
@@ -155,28 +185,45 @@ using (var scope = app.Services.CreateScope())
 
             var result = await userManager.CreateAsync(admin, adminPass);
             if (result.Succeeded)
+            {
                 await userManager.AddToRoleAsync(admin, "Admin");
+                Console.WriteLine($"✅ Admin creato: {adminEmail}");
+            }
+            else
+            {
+                Console.WriteLine($"❌ Errore creazione admin: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            }
         }
         else
         {
+            Console.WriteLine($"✅ Admin già esistente: {adminEmail}");
             if (!await userManager.IsInRoleAsync(existingAdmin, "Admin"))
+            {
                 await userManager.AddToRoleAsync(existingAdmin, "Admin");
+                Console.WriteLine("➕ Ruolo Admin assegnato");
+            }
         }
 
         string[] tattooStyles = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons", "Animals" };
         var existingStyles = await db.TattooStyles.Select(t => t.Name).ToListAsync();
 
         foreach (var style in tattooStyles)
+        {
             if (!existingStyles.Contains(style))
+            {
                 db.TattooStyles.Add(new TattooStyle { Name = style });
+            }
+        }
 
         await db.SaveChangesAsync();
+        Console.WriteLine("✅ Seeding completato");
 
     }
     catch (Exception ex)
     {
         var loggerError = services.GetRequiredService<ILogger<Program>>();
         loggerError.LogError($"❌ Errore durante seeding: {ex.Message}");
+        Console.WriteLine($"❌ Stack trace: {ex.StackTrace}");
     }
 }
 

@@ -133,122 +133,79 @@ using (var scope = app.Services.CreateScope())
         var db = services.GetRequiredService<AppDbContext>();
 
         logger.LogInformation("🔄 Applicazione migrazioni database...");
-        await db.Database.MigrateAsync();
-        logger.LogInformation("✅ Migrazioni completate con successo");
 
-        // Attendi un momento per essere sicuri che il DB sia pronto
-        await Task.Delay(500);
+        // Controlla se ci sono pending migrations
+        var pendingMigrations = await db.Database.GetPendingMigrationsAsync();
+        if (pendingMigrations.Any())
+        {
+            logger.LogWarning("⚠️ Ci sono migrazioni in sospeso:");
+            foreach (var m in pendingMigrations)
+                logger.LogWarning($" - {m}");
+
+            logger.LogInformation("✅ Applicazione migrazioni in sospeso...");
+            await db.Database.MigrateAsync();
+            logger.LogInformation("✅ Migrazioni completate con successo");
+        }
+        else
+        {
+            logger.LogInformation("✅ Nessuna migrazione pendente, DB aggiornato");
+        }
+
+        await Task.Delay(500); // Assicurati che il DB sia pronto
 
         // ---------------- RUOLI ----------------
-        logger.LogInformation("📋 Creazione/Verifica Ruoli...");
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         string[] roles = { "Admin", "User" };
 
         foreach (var role in roles)
         {
-            var roleExists = await roleManager.RoleExistsAsync(role);
-            logger.LogInformation($"Controllo ruolo '{role}': {(roleExists ? "Esiste già" : "Da creare")}");
-
-            if (!roleExists)
+            if (!await roleManager.RoleExistsAsync(role))
             {
                 var result = await roleManager.CreateAsync(new IdentityRole(role));
                 if (result.Succeeded)
-                {
-                    logger.LogInformation($"✅ Ruolo '{role}' creato con successo");
-                }
+                    logger.LogInformation($"✅ Ruolo '{role}' creato");
                 else
-                {
-                    logger.LogError($"❌ Errore creazione ruolo '{role}':");
-                    foreach (var error in result.Errors)
-                    {
-                        logger.LogError($"  - {error.Description}");
-                    }
-                }
+                    logger.LogError($"❌ Errore creazione ruolo '{role}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
             }
         }
 
         // ---------------- ADMIN ----------------
-        logger.LogInformation("👤 Creazione/Verifica Admin...");
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
         var adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL") ?? "admin@klodtattoo.com";
         var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "Admin@123!Strong";
 
-        logger.LogInformation($"Email Admin configurata: {adminEmail}");
-        logger.LogInformation($"Password Admin lunghezza: {adminPass.Length} caratteri");
-
         var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
 
         if (existingAdmin == null)
         {
-            logger.LogInformation("Admin non trovato, procedo con la creazione...");
-
-            var admin = new IdentityUser
-            {
-                UserName = adminEmail,
-                Email = adminEmail,
-                EmailConfirmed = true
-            };
-
+            var admin = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
             var result = await userManager.CreateAsync(admin, adminPass);
 
             if (result.Succeeded)
             {
-                logger.LogInformation($"✅ Utente Admin creato con successo (ID: {admin.Id})");
-
-                var roleResult = await userManager.AddToRoleAsync(admin, "Admin");
-                if (roleResult.Succeeded)
-                {
-                    logger.LogInformation($"✅ Ruolo 'Admin' assegnato con successo");
-                }
-                else
-                {
-                    logger.LogError($"❌ Errore assegnazione ruolo Admin:");
-                    foreach (var error in roleResult.Errors)
-                    {
-                        logger.LogError($"  - {error.Description}");
-                    }
-                }
+                logger.LogInformation($"✅ Admin creato: {adminEmail}");
+                await userManager.AddToRoleAsync(admin, "Admin");
+                logger.LogInformation("✅ Ruolo 'Admin' assegnato");
             }
             else
             {
-                logger.LogError($"❌ ERRORE CRITICO: Impossibile creare admin '{adminEmail}'");
-                logger.LogError("Dettagli errori:");
-                foreach (var error in result.Errors)
-                {
-                    logger.LogError($"  - [{error.Code}] {error.Description}");
-                }
-                logger.LogError("");
-                logger.LogError("💡 SUGGERIMENTI:");
-                logger.LogError("1. Verifica che ADMIN_PASSWORD rispetti i requisiti:");
-                logger.LogError("   - Almeno 8 caratteri");
-                logger.LogError("   - Almeno una maiuscola");
-                logger.LogError("   - Almeno una minuscola");
-                logger.LogError("   - Almeno un numero");
-                logger.LogError("   - Almeno un carattere speciale (!@#$%^&*)");
-                logger.LogError($"2. Password attuale: {adminPass}");
+                logger.LogError($"❌ Errore creazione Admin '{adminEmail}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
             }
         }
         else
         {
-            logger.LogInformation($"✅ Admin già esistente (ID: {existingAdmin.Id})");
-
-            // Verifica che abbia il ruolo Admin
-            var hasAdminRole = await userManager.IsInRoleAsync(existingAdmin, "Admin");
-            if (!hasAdminRole)
+            logger.LogInformation($"✅ Admin già esistente: {adminEmail}");
+            if (!await userManager.IsInRoleAsync(existingAdmin, "Admin"))
             {
-                logger.LogWarning("⚠️ Admin esiste ma non ha il ruolo 'Admin', lo aggiungo...");
                 await userManager.AddToRoleAsync(existingAdmin, "Admin");
-                logger.LogInformation("✅ Ruolo 'Admin' assegnato");
+                logger.LogInformation("✅ Ruolo 'Admin' aggiunto");
             }
         }
 
         // ---------------- TATTOO STYLES ----------------
-        logger.LogInformation("🎨 Creazione/Verifica Stili Tatuaggio...");
         string[] tattooStyles = { "Realistic", "Fine line", "Black Art", "Lettering", "Small Tattoos", "Cartoons", "Animals" };
-
         var existingStyles = await db.TattooStyles.Select(t => t.Name).ToListAsync();
-        logger.LogInformation($"Stili esistenti nel DB: {existingStyles.Count}");
 
         int addedCount = 0;
         foreach (var style in tattooStyles)
@@ -257,27 +214,17 @@ using (var scope = app.Services.CreateScope())
             {
                 db.TattooStyles.Add(new TattooStyle { Name = style });
                 addedCount++;
-                logger.LogInformation($"➕ Aggiunto stile: {style}");
-            }
-            else
-            {
-                logger.LogDebug($"✓ Stile già esistente: {style}");
             }
         }
-
         if (addedCount > 0)
         {
             await db.SaveChangesAsync();
-            logger.LogInformation($"✅ Salvati {addedCount} nuovi stili nel database");
+            logger.LogInformation($"✅ Aggiunti {addedCount} nuovi stili tatuaggio");
         }
         else
         {
-            logger.LogInformation("✅ Tutti gli stili erano già presenti");
+            logger.LogInformation("✅ Tutti gli stili tatuaggio già presenti");
         }
-
-        // Verifica finale
-        var finalStyleCount = await db.TattooStyles.CountAsync();
-        logger.LogInformation($"📊 Totale stili nel database: {finalStyleCount}");
 
         logger.LogInformation("========================================");
         logger.LogInformation("✅ SEEDING COMPLETATO CON SUCCESSO");
@@ -286,11 +233,10 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         logger.LogError("========================================");
-        logger.LogError("❌ ERRORE FATALE DURANTE MIGRAZIONE/SEEDING");
-        logger.LogError("========================================");
+        logger.LogError("❌ ERRORE DURANTE MIGRAZIONE/SEEDING");
         logger.LogError($"Tipo: {ex.GetType().Name}");
         logger.LogError($"Messaggio: {ex.Message}");
-        logger.LogError($"Stack Trace:\n{ex.StackTrace}");
+        logger.LogError($"StackTrace:\n{ex.StackTrace}");
 
         if (ex.InnerException != null)
         {
@@ -299,8 +245,7 @@ using (var scope = app.Services.CreateScope())
             logger.LogError($"Messaggio: {ex.InnerException.Message}");
         }
 
-        // Non bloccare l'avvio dell'app, ma logga l'errore
-        logger.LogError("⚠️ L'applicazione continuerà ad avviarsi, ma il seeding potrebbe essere incompleto");
+        logger.LogError("⚠️ L'app continuerà ad avviarsi, ma il seeding potrebbe essere incompleto");
     }
 }
 

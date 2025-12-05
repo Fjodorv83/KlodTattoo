@@ -13,6 +13,13 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 // ----------------------------------------------------------
+// CONFIGURAZIONE PORTA PER RAILWAY
+// ----------------------------------------------------------
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+Console.WriteLine($"🚀 Server configurato per ascoltare sulla porta: {port}");
+
+// ----------------------------------------------------------
 // LOGGING CONFIGURATION (IMPORTANTE PER DEBUG!)
 // ----------------------------------------------------------
 builder.Logging.ClearProviders();
@@ -177,4 +184,5 @@ app.MapRazorPages();
 app.MapControllerRoute(name: "areas", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
+Console.WriteLine($"✅ Applicazione pronta e in ascolto sulla porta {port}");
 app.Run();

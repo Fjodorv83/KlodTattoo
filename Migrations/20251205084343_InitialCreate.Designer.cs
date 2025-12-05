@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KlodTattooWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251205074951_InitialCreate")]
+    [Migration("20251205084343_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

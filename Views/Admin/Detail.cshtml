@@ -1,18 +1,17 @@
-@model KlodTattooWeb.Models.PortfolioItem
+﻿@model KlodTattooWeb.Models.PortfolioItem
 
 @{
-    ViewData["Title"] = "Elimina Elemento Portfolio";
+    ViewData["Title"] = "Dettagli Elemento Portfolio";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="text-center text-danger">Elimina</h1>
+<h1 class="text-center">Dettagli</h1>
 
-<h3 class="text-center">Sei sicuro di voler eliminare questo elemento?</h3>
+<h4 class="text-center">Elemento Portfolio</h4>
+<hr />
 
 <div class="row justify-content-center mt-4">
     <div class="col-md-6">
-        <h4 class="text-center">Elemento Portfolio</h4>
-        <hr />
 
         <dl class="row">
             <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Title)</dt>
@@ -25,18 +24,17 @@
             <dd class="col-sm-8">
                 <img src="@Model.ImageUrl"
                      alt="@Model.Title"
-                     style="max-width: 200px; max-height: 200px; border-radius: 8px;" />
+                     style="max-width: 250px; max-height: 250px; border-radius: 8px;" />
             </dd>
 
             <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedAt)</dd>
         </dl>
 
-        <form asp-action="Delete" class="text-center mt-3">
-            <input type="hidden" asp-for="Id" />
-
-            <button type="submit" class="btn btn-danger px-4">Elimina</button>
+        <div class="text-center mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifica</a>
             <a asp-action="Index" class="btn btn-secondary ms-2">Torna alla Lista</a>
-        </form>
+        </div>
+
     </div>
 </div>

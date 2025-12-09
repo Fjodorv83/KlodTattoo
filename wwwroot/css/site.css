@@ -266,6 +266,24 @@ a:hover {
     justify-content: center;
 }
 
+/* Custom Logo Styling */
+.navbar-logo-custom {
+    height: 75px;
+    /* Increased size */
+    width: auto;
+    /* Use SVG Filter to convert Black->Gold and White->Transparent */
+    filter: url(#gold-logo-filter);
+    /* Crop the border from the original image */
+    clip-path: inset(8px);
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.navbar-logo-custom:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
 /* Page Spacers */
 .page-content-wrapper {
     padding-top: 100px;

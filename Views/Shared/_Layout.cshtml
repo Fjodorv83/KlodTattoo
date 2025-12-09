@@ -41,17 +41,34 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+    <!-- SVG Filter Definition for Logo -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <filter id="gold-logo-filter" color-interpolation-filters="sRGB">
+                <!-- 1. Extract Alpha: Turn Black (0) to 1, White (1) to 0. 
+                     R' = 0, G' = 0, B' = 0
+                     A' = -1*R + 1 (Effectively inverts the Red channel to use as Alpha) -->
+                <feColorMatrix type="matrix" values="0 0 0 0 0
+                                                     0 0 0 0 0
+                                                     0 0 0 0 0
+                                                     -1.2 0 0 0 1" result="alpha-mask"/>
+                
+                <!-- 2. Create Gold Color Block -->
+                <feFlood flood-color="#d4af37" result="gold-color"/>
+                
+                <!-- 3. Mask Gold with Alpha -->
+                <feComposite in="gold-color" in2="alpha-mask" operator="in" />
+            </filter>
+        </defs>
+    </svg>
     <!-- Header/Navbar -->
     <header class="fixed-top">
         <nav class="navbar navbar-expand-lg navbar-dark @(isHomePage ? "navbar-transparent shadow-none" : "navbar-glass shadow-sm")" 
              data-dynamic-navbar="@(isHomePage.ToString().ToLower())">
-            <div class="container-fluid px-4 px-lg-5">
+            <div class="container-fluid" style="padding: 0 30px;">
                 <!-- Logo/Brand -->
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-dragon me-2" style="color: #d4af37; font-size: 1.5rem;"></i>
-                    <span class="fw-bold text-uppercase" style="color: #d4af37; letter-spacing: 2px; font-size: 1.2rem;">
-                     Klod Tattoo
-                    </span>
+                    <img src="~/images/klod_logo.png" alt="Klod Tattoo Logo" class="navbar-logo-custom" />
                 </a>
 
                 <!-- Mobile Toggle -->
@@ -63,29 +80,29 @@
                 <!-- Nav Items -->
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Main Navigation -->
-                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index">
+                            <a class="nav-link px-2 position-relative nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index">
                                 <i class="fas fa-home me-1"></i>@Localizer["Nav_Home"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Portfolio" asp-action="Index">
+                            <a class="nav-link px-2 position-relative nav-link-custom" asp-area="" asp-controller="Portfolio" asp-action="Index">
                                 <i class="fas fa-images me-1"></i>@Localizer["Nav_Portfolio"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Services" asp-action="Index">
+                            <a class="nav-link px-2 position-relative nav-link-custom" asp-area="" asp-controller="Services" asp-action="Index">
                                 <i class="fas fa-palette me-1"></i>@Localizer["Nav_Services"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Info" asp-action="Index">
+                            <a class="nav-link px-2 position-relative nav-link-custom" asp-area="" asp-controller="Info" asp-action="Index">
                                 <i class="fas fa-info-circle me-1"></i>@Localizer["Nav_Info"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Contacts" asp-action="Index">
+                            <a class="nav-link px-2 position-relative nav-link-custom" asp-area="" asp-controller="Contacts" asp-action="Index">
                                 <i class="fas fa-envelope me-1"></i>@Localizer["Nav_Contacts"]
                             </a>
                         </li>
@@ -229,8 +246,8 @@
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-envelope text-warning me-2"></i>
-                            <a href="mailto:info@klodtattoo.de" class="text-muted text-decoration-none small">
-                                info@klodtattoo.de
+                            <a href="mailto:b.klodtattoo@gmail.com" class="text-muted text-decoration-none small">
+                                b.klodtattoo@gmail.com
                             </a>
                         </li>
                         <li class="mb-2">
@@ -341,6 +358,7 @@
             color: rgba(255, 255, 255, 0.85) !important;
             transition: all 0.3s ease;
             font-weight: 500;
+            font-size: 0.95rem; /* Slightly reduced */
         }
 
         .nav-link-custom:hover,

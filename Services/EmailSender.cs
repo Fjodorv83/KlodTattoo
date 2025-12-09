@@ -1,4 +1,4 @@
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -16,70 +16,73 @@ namespace KlodTattooWeb.Services
             _emailSettings = emailSettings.Value;
         }
 
-        // Metodo standard per Identity (Reset Password, Conferma Email)
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             await ExecuteSendEmailAsync(email, subject, htmlMessage, null);
         }
 
-        // NUOVO METODO: Da usare nel BookingController per le mail dai clienti
-        // Permette di impostare il "Rispondi a" (Reply-To) verso il cliente
         public async Task SendContactEmailAsync(string clientEmail, string clientName, string subject, string htmlMessage)
         {
-            // Inviamo la mail a NOI STESSI (SenderEmail), ma se clicchiamo rispondi, rispondiamo al CLIENTE (clientEmail)
             await ExecuteSendEmailAsync(_emailSettings.SenderEmail, subject, htmlMessage, clientEmail);
         }
 
-        // Metodo privato che esegue l'invio reale
         private async Task ExecuteSendEmailAsync(string toEmail, string subject, string htmlMessage, string? replyToEmail)
         {
+            Console.WriteLine($"📧 [START] Inizio invio email a: {toEmail}");
+
             var message = new MimeMessage();
-
-            // Il mittente DEVE essere la mail autenticata (Tu)
             message.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
-
-            // Il destinatario
             message.To.Add(new MailboxAddress("", toEmail));
 
-            // Se c'� una mail per la risposta (quella del cliente), la aggiungiamo
             if (!string.IsNullOrEmpty(replyToEmail))
             {
                 message.ReplyTo.Add(new MailboxAddress("", replyToEmail));
             }
 
             message.Subject = subject;
-
-            message.Body = new TextPart("html")
-            {
-                Text = htmlMessage
-            };
+            message.Body = new TextPart("html") { Text = htmlMessage };
 
             using var client = new SmtpClient();
 
             try
             {
-                // Connessione a Google
+                // 1. TRUCCO PER RAILWAY: Ignora errori certificati SSL del server
+                // Questo risolve il 90% dei blocchi sui server Linux cloud
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                Console.WriteLine($"🔌 [CONNECT] Tentativo connessione a {_emailSettings.SmtpServer}:{_emailSettings.SmtpPort}...");
+
+                // 2. TIMEOUT BREVE: Non aspettare 2 minuti, fallisci dopo 10 secondi così vediamo l'errore
+                client.Timeout = 10000;
+
+                // 3. Connessione FORZATA SSL (Usa SecureSocketOptions.SslOnConnect per la porta 465)
                 await client.ConnectAsync(
                     _emailSettings.SmtpServer,
                     _emailSettings.SmtpPort,
-                    SecureSocketOptions.Auto
+                    SecureSocketOptions.SslOnConnect
                 );
 
-                // Login
+                Console.WriteLine("✅ [CONNECT] Connesso! Autenticazione in corso...");
+
                 await client.AuthenticateAsync(_emailSettings.SmtpUsername, _emailSettings.SmtpPassword);
 
-                // Invio
+                Console.WriteLine("✅ [AUTH] Autenticato! Invio messaggio...");
+
                 await client.SendAsync(message);
+
+                Console.WriteLine("🚀 [SUCCESS] Email inviata correttamente!");
             }
             catch (Exception ex)
             {
-                // In fase di sviluppo � utile vedere l'errore nella console
-                Console.WriteLine($"Errore invio email: {ex.Message}");
-                throw; // Rilanciamo l'errore per gestirlo nel Controller o mostrarlo all'utente
+                // Stampa l'errore ESATTO nei log di Railway
+                Console.WriteLine($"❌ [ERROR] ERRORE CRITICO EMAIL: {ex.Message}");
+                Console.WriteLine($"❌ [STACK] {ex.StackTrace}");
+                throw;
             }
             finally
             {
-                await client.DisconnectAsync(true);
+                if (client.IsConnected)
+                    await client.DisconnectAsync(true);
             }
         }
     }

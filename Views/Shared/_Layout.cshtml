@@ -62,61 +62,58 @@
 
                 <!-- Nav Items -->
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <!-- Main Navigation -->
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" 
-                               asp-area="" asp-controller="Home" asp-action="Index">
+                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index">
                                 <i class="fas fa-home me-1"></i>@Localizer["Nav_Home"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" 
-                               asp-area="" asp-controller="Portfolio" asp-action="Index">
+                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Portfolio" asp-action="Index">
                                 <i class="fas fa-images me-1"></i>@Localizer["Nav_Portfolio"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" 
-                               asp-area="" asp-controller="Services" asp-action="Index">
+                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Services" asp-action="Index">
                                 <i class="fas fa-palette me-1"></i>@Localizer["Nav_Services"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" 
-                               asp-area="" asp-controller="Info" asp-action="Index">
+                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Info" asp-action="Index">
                                 <i class="fas fa-info-circle me-1"></i>@Localizer["Nav_Info"]
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 position-relative nav-link-custom" 
-                               asp-area="" asp-controller="Contacts" asp-action="Index">
+                            <a class="nav-link px-3 position-relative nav-link-custom" asp-area="" asp-controller="Contacts" asp-action="Index">
                                 <i class="fas fa-envelope me-1"></i>@Localizer["Nav_Contacts"]
                             </a>
                         </li>
-                        
-                        <!-- CTA Button -->
-                        <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                            <a class="btn btn-gold px-4 py-2 rounded-pill shadow" 
-                               asp-area="" asp-controller="Booking" asp-action="Create">
-                                <i class="fas fa-calendar-check me-2"></i>@Localizer["Nav_Book"]
-                            </a>
-                        </li>
-
-                        <!-- Admin Link (if authenticated) -->
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item ms-lg-2">
-                                <a class="nav-link px-3 text-warning" 
-                                   asp-area="" asp-controller="Admin" asp-action="Index">
-                                    <i class="fas fa-user-shield me-1"></i>@Localizer["Nav_Admin"]
-                                </a>
-                            </li>
-                        }
                     </ul>
 
-                    <!-- Login Partial -->
-                    <div class="ms-lg-3 mt-2 mt-lg-0">
-                        <partial name="_LanguagePartial" /> <partial name="_LoginPartial" />
+                    <!-- Desktop Divider -->
+                    <div class="d-none d-lg-block mx-3" style="border-right: 1px solid rgba(255,255,255,0.2); height: 24px;"></div>
+
+                    <!-- Functional Group (Booking + Auth + Lang) -->
+                    <div class="d-flex align-items-lg-center gap-3 flex-column flex-lg-row mt-3 mt-lg-0">
+                        <!-- Booking Button -->
+                        <a class="btn btn-gold px-4 py-2 rounded-pill shadow-sm" asp-area="" asp-controller="Booking" asp-action="Create">
+                            <i class="fas fa-calendar-check me-2"></i>@Localizer["Nav_Book"]
+                        </a>
+
+                        <!-- Admin Link -->
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a class="nav-link px-2 text-warning" asp-area="" asp-controller="Admin" asp-action="Index" title="@Localizer["Nav_Admin"]">
+                                <i class="fas fa-user-shield"></i>
+                            </a>
+                        }
+
+                        <!-- Utilities Group -->
+                        <div class="d-flex align-items-center gap-2">
+                             <partial name="_LanguagePartial" />
+                             <partial name="_LoginPartial" />
+                        </div>
                     </div>
                 </div>
             </div>

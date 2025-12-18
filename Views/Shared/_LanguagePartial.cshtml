@@ -9,7 +9,11 @@
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .Select(c => new SelectListItem 
+        { 
+            Value = c.Name, 
+            Text = System.Globalization.CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(c.DisplayName.Split('(')[0].Trim())
+        })
         .ToList();
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
 }
@@ -24,7 +28,7 @@
             @foreach (var culture in cultureItems)
             {
                 <li>
-                    <form asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" method="post">
+                    <form asp-area="" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" method="post">
                         <input type="hidden" name="culture" value="@culture.Value" />
                         <button type="submit" class="dropdown-item text-light hover-gold d-flex align-items-center">
                             <img src="~/images/flags/@(culture.Value.Substring(0, 2).ToLower()).svg" alt="Flag" class="me-2" style="width: 24px; border: 1px solid rgba(255,255,255,0.1);" />

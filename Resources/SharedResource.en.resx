@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Hero_Tagline" xml:space="preserve">
+    <value>Art on Your Skin</value>
+  </data>
+  <data name="Hero_BookButton" xml:space="preserve">
+    <value>Book Now</value>
+  </data>
+  <data name="Bio_Title" xml:space="preserve">
+    <value>Biografy</value>
+  </data>
+  <data name="Bio_Welcome" xml:space="preserve">
+    <value>Welcome to &lt;strong style="color: #d4af37;"&gt;Klod Tattoo&lt;/strong&gt;: here, art isn’t just admired... &lt;strong&gt;it’s worn&lt;/strong&gt;.</value>
+  </data>
+  <data name="Bio_Paragraph1" xml:space="preserve">
+    <value>Every line, every shadow, and every detail is born from a vision carefully designed and tailored for you. I don’t create “standard” tattoos: each project is a unique masterpiece, crafted to tell your story with style, strength, and elegance.</value>
+  </data>
+  <data name="Bio_Education" xml:space="preserve">
+    <value>&lt;i class="fas fa-graduation-cap text-warning me-2"&gt;&lt;/i&gt;  
+My education began at the &lt;strong&gt;Art High School&lt;/strong&gt; and was refined at the &lt;strong&gt;Institute of Fine Arts&lt;/strong&gt;, where I transformed drawing into a true aesthetic discipline.
+</value>
+  </data>
+  <data name="Bio_Paragraph2" xml:space="preserve">
+    <value>This academic foundation, combined with years of hands-on experience, allows me to merge technical precision with artistic sensitivity in every piece.</value>
+  </data>
+  <data name="Bio_Feature1" xml:space="preserve">
+    <value>Inchiostri Certificati</value>
+  </data>
+  <data name="Bio_Feature2" xml:space="preserve">
+    <value>Impeccable Hygiene</value>
+  </data>
+  <data name="Bio_Feature3" xml:space="preserve">
+    <value>Professional Equipment</value>
+  </data>
+  <data name="Bio_Feature4" xml:space="preserve">
+    <value>Long-Lasting Results</value>
+  </data>
+  <data name="Bio_Quote" xml:space="preserve">
+    <value>At Klod Tattoo, you don’t just get ink: &lt;br /&gt; &lt;strong style="color: #d4af37;"&gt;you embrace a timeless work of art, created to live with you forever.&lt;/strong&gt;</value>
+  </data>
+  <data name="Stats_Years" xml:space="preserve">
+    <value>Years</value>
+  </data>
+  <data name="Stats_Tattoos" xml:space="preserve">
+    <value>Tattoos</value>
+  </data>
+  <data name="Stats_Rating" xml:space="preserve">
+    <value>Rating</value>
+  </data>
+  <data name="Styles_Title" xml:space="preserve">
+    <value>Our Styles</value>
+  </data>
+  <data name="Styles_Subtitle" xml:space="preserve">
+    <value>Artistic Specializations for Every Need</value>
+  </data>
+  <data name="Style_Realistic_Title" xml:space="preserve">
+    <value>Realistic</value>
+  </data>
+  <data name="Style_Realistic_Description" xml:space="preserve">
+    <value>Portraits and photographic details with surgical precision.</value>
+  </data>
+  <data name="Style_Realistic_Feature1" xml:space="preserve">
+    <value>Realistic Portraits</value>
+  </data>
+  <data name="Style_Realistic_Feature2" xml:space="preserve">
+    <value>Photographic Details</value>
+  </data>
+  <data name="Style_Realistic_Feature3" xml:space="preserve">
+    <value>Perfect Chiaroscuro</value>
+  </data>
+  <data name="Style_Traditional_Title" xml:space="preserve">
+    <value>Traditional</value>
+  </data>
+  <data name="Style_Traditional_Description" xml:space="preserve">
+    <value>Solid lines and vibrant colors of Old School tradition.</value>
+  </data>
+  <data name="Style_Traditional_Feature1" xml:space="preserve">
+    <value>Bold Lines</value>
+  </data>
+  <data name="Style_Traditional_Feature2" xml:space="preserve">
+    <value>Saturated Colors</value>
+  </data>
+  <data name="Style_Traditional_Feature3" xml:space="preserve">
+    <value>Classic Style</value>
+  </data>
+  <data name="Style_Blackwork_Title" xml:space="preserve">
+    <value>Blackwork</value>
+  </data>
+  <data name="Style_Blackwork_Description" xml:space="preserve">
+    <value>Bold contrasts, striking geometries, and impactful designs.</value>
+  </data>
+  <data name="Style_Blackwork_Feature1" xml:space="preserve">
+    <value>High Contrast</value>
+  </data>
+  <data name="Style_Blackwork_Feature2" xml:space="preserve">
+    <value>Geometric Patterns</value>
+  </data>
+  <data name="Style_Blackwork_Feature3" xml:space="preserve">
+    <value>Dramatic Impact</value>
+  </data>
+  <data name="Reviews_Title" xml:space="preserve">
+    <value>What They Say About Us</value>
+  </data>
+  <data name="Reviews_Subtitle" xml:space="preserve">
+    <value>Customer satisfaction is our top priority</value>
+  </data>
+  <data name="Review1_Text" xml:space="preserve">
+    <value>“Klod is an incredible artist. He immediately understood what I wanted, and the result went beyond expectations. The studio is spotless.”</value>
+  </data>
+  <data name="Review1_Name" xml:space="preserve">
+    <value>Marco R.</value>
+  </data>
+  <data name="Review2_Text" xml:space="preserve">
+    <value>“Top-level professionalism. I immediately felt comfortable. The tattoo healed perfectly by following his advice.”</value>
+  </data>
+  <data name="Review2_Name" xml:space="preserve">
+    <value>Giulia B.</value>
+  </data>
+  <data name="Review3_Text" xml:space="preserve">
+    <value>"Extremely light hand and surgical precision. I’ll definitely come back for my next piece!"</value>
+  </data>
+  <data name="Review3_Name" xml:space="preserve">
+    <value>Luca S.</value>
+  </data>
+  <data name="Review_VerifiedCustomer" xml:space="preserve">
+    <value>Verified Client</value>
+  </data>
+  <data name="CTA_Title" xml:space="preserve">
+    <value>Ready for Your Masterpiece?</value>
+  </data>
+  <data name="CTA_Subtitle" xml:space="preserve">
+    <value>Book a free consultation now and start your artistic journey</value>
+  </data>
+  <data name="CTA_Button" xml:space="preserve">
+    <value>Book Now</value>
+  </data>
+  <data name="Nav_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Nav_Portfolio" xml:space="preserve">
+    <value>Portfolio</value>
+  </data>
+  <data name="Nav_Services" xml:space="preserve">
+    <value>Services</value>
+  </data>
+  <data name="Nav_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Nav_Contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="Nav_Book" xml:space="preserve">
+    <value>Book Now</value>
+  </data>
+  <data name="Nav_Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Nav_Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Nav_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Nav_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Nav_Welcome" xml:space="preserve">
+    <value>Hello</value>
+  </data>
+  <data name="Footer_QuickLinks" xml:space="preserve">
+    <value>Quick Links</value>
+  </data>
+  <data name="Footer_Services" xml:space="preserve">
+    <value>Services</value>
+  </data>
+  <data name="Footer_Contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="Footer_Privacy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="Footer_Cookie" xml:space="preserve">
+    <value>Cookie Policy</value>
+  </data>
+  <data name="Footer_Terms" xml:space="preserve">
+    <value>Terms of Service</value>
+  </data>
+  <data name="Footer_Rights" xml:space="preserve">
+    <value>All rights reserved.</value>
+  </data>
+  <data name="Footer_Service_Custom" xml:space="preserve">
+    <value>Custom Tattoos</value>
+  </data>
+  <data name="Footer_Service_CoverUp" xml:space="preserve">
+    <value>Cover Up</value>
+  </data>
+  <data name="Footer_Service_Restoration" xml:space="preserve">
+    <value>Tattoo Restoration</value>
+  </data>
+  <data name="Footer_Service_Consultation" xml:space="preserve">
+    <value>Free Consultation</value>
+  </data>
+  <data name="Footer_Description" xml:space="preserve">
+    <value>Professional tattoo studio in Obernburg am Main. Skin art since 2015. Specialized in realism, traditional, and blackwork.</value>
+  </data>
+  <data name="Back_To_Portfolio" xml:space="preserve">
+    <value>Back to Portfolio</value>
+  </data>
+  <data name="Created_On" xml:space="preserve">
+    <value>Created on</value>
+  </data>
+  <data name="Manage_Account" xml:space="preserve">
+    <value>Manage Account</value>
+  </data>
+</root>

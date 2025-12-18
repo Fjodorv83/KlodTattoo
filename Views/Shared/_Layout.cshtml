@@ -38,6 +38,44 @@
 
     <!-- Cookie Banner CSS -->
     <link rel="stylesheet" href="~/css/cookie-banner.css" asp-append-version="true" />
+
+    <!-- Schema Markup (LocalBusiness) -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "TattooParlor",
+      "name": "Klod Tattoo Studio",
+      "image": "https://klodtattooweb.railway.app/images/klod_logo.png",
+      "telephone": "+491722487670",
+      "email": "info.klodtattoo@gmail.com",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "Lindenstraße 26",
+        "addressLocality": "Obernburg am Main",
+        "postalCode": "63785",
+        "addressCountry": "DE"
+      },
+      "geo": {
+        "@@type": "GeoCoordinates",
+        "latitude": 49.840,
+        "longitude": 9.085
+      },
+      "url": "https://klodtattooweb.railway.app",
+      "openingHoursSpecification": {
+        "@@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "10:00",
+        "closes": "19:00"
+      },
+      "priceRange": "$$$"
+    }
+    </script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">

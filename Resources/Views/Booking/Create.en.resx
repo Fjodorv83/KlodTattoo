@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Page_Title" xml:space="preserve">
+    <value>Book an Appointment</value>
+  </data>
+  <data name="Page_Subtitle" xml:space="preserve">
+    <value>Fill out the form below to request a consultation or appointment.</value>
+  </data>
+  <data name="Label_FullName" xml:space="preserve">
+    <value>Full Name</value>
+  </data>
+  <data name="Label_Email" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="Label_BodyPart" xml:space="preserve">
+    <value>Body Part</value>
+  </data>
+  <data name="Placeholder_BodyPart" xml:space="preserve">
+    <value>e.g. Forearm, Back, etc.</value>
+  </data>
+  <data name="Label_PreferredDate" xml:space="preserve">
+    <value>Preferred Date</value>
+  </data>
+  <data name="Placeholder_PreferredDate" xml:space="preserve">
+    <value>Select a date</value>
+  </data>
+  <data name="Label_IdeaDescription" xml:space="preserve">
+    <value>Describe your idea</value>
+  </data>
+  <data name="Placeholder_IdeaDescription" xml:space="preserve">
+    <value>Briefly describe the tattoo you would like...</value>
+  </data>
+  <data name="Button_SubmitRequest" xml:space="preserve">
+    <value>Submit Request</value>
+  </data>
+</root>

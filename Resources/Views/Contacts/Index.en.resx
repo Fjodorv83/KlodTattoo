@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Page_Title" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="Page_Subtitle" xml:space="preserve">
+    <value>We are here for you</value>
+  </data>
+  <data name="Studio_Name" xml:space="preserve">
+    <value>Klod Tattoo Studio</value>
+  </data>
+  <data name="Label_Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Address_Street" xml:space="preserve">
+    <value>Lindenstraße 26</value>
+  </data>
+  <data name="Address_City" xml:space="preserve">
+    <value>63785 Obernburg am Main</value>
+  </data>
+  <data name="Address_Country" xml:space="preserve">
+    <value>Germany</value>
+  </data>
+  <data name="Label_Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Phone_Tooltip" xml:space="preserve">
+    <value>Also WhatsApp</value>
+  </data>
+  <data name="Label_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Email_Tooltip" xml:space="preserve">
+    <value>We reply within 24h</value>
+  </data>
+  <data name="Label_Instagram" xml:space="preserve">
+    <value>Instagram</value>
+  </data>
+  <data name="Instagram_Username" xml:space="preserve">
+    <value>@klod_tattoo</value>
+  </data>
+  <data name="Instagram_Tooltip" xml:space="preserve">
+    <value>Follow us for updates</value>
+  </data>
+  <data name="Label_OpeningHours" xml:space="preserve">
+    <value>Opening Hours</value>
+  </data>
+  <data name="OpeningHours_Weekdays" xml:space="preserve">
+    <value>Mon - Fri</value>
+  </data>
+  <data name="OpeningHours_Weekdays_Time" xml:space="preserve">
+    <value>10:00 - 19:00</value>
+  </data>
+  <data name="OpeningHours_Saturday" xml:space="preserve">
+    <value>Saturday</value>
+  </data>
+  <data name="OpeningHours_Saturday_Time" xml:space="preserve">
+    <value>10:00 - 16:00</value>
+  </data>
+  <data name="OpeningHours_Sunday" xml:space="preserve">
+    <value>Sunday</value>
+  </data>
+  <data name="OpeningHours_Closed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="Button_BookAppointment" xml:space="preserve">
+    <value>Book Appointment</value>
+  </data>
+  <data name="Label_FindUs" xml:space="preserve">
+    <value>Find Us</value>
+  </data>
+  <data name="Label_Parking" xml:space="preserve">
+    <value>Parking</value>
+  </data>
+  <data name="Parking_Description" xml:space="preserve">
+    <value>Free parking available in front of the studio</value>
+  </data>
+  <data name="Label_Accessible" xml:space="preserve">
+    <value>Accessibility</value>
+  </data>
+  <data name="Accessible_Description" xml:space="preserve">
+    <value>Studio accessible to people with disabilities</value>
+  </data>
+  <data name="Social_Title" xml:space="preserve">
+    <value>Follow us on Social</value>
+  </data>
+  <data name="Social_Subtitle" xml:space="preserve">
+    <value>Stay updated on our latest works and promotions</value>
+  </data>
+  <data name="Social_FollowerCount" xml:space="preserve">
+    <value>Join our community</value>
+  </data>
+  <data name="Appointment_Info_Title" xml:space="preserve">
+    <value>Appointment Info</value>
+  </data>
+  <data name="Appointment_Info_Description" xml:space="preserve">
+    <value>For urgent appointments or last-minute changes, we recommend calling us directly.</value>
+  </data>
+</root>

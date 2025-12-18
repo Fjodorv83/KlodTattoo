@@ -20,17 +20,32 @@ namespace KlodTattooWeb.Data
                 logger.LogInformation("🚀 INIZIO SEEDING DATABASE");
                 logger.LogInformation("========================================");
 
-                // ---------- APPLY MIGRATIONS ----------
-                var pending = await db.Database.GetPendingMigrationsAsync();
-                if (pending.Any())
+                // ---------- DATABASE CREATION / MIGRATION ----------
+                // Logic:
+                // 1. MSSQL (Local): Use EnsureCreated() to bypass Postgres-specific migrations.
+                // 2. Postgres/Other: Use Migrate() to keep consistent with production migrations.
+                
+                var provider = db.Database.ProviderName;
+                if (provider != null && provider.Contains("SqlServer"))
                 {
-                    logger.LogWarning("⚠️ Migrazioni pendenti trovate. Le applico...");
-                    await db.Database.MigrateAsync();
-                    logger.LogInformation("✅ Migrazioni completate");
+                    logger.LogInformation("🖥️ Rilevato MSSQL: Eseguo EnsureCreated()...");
+                    await db.Database.EnsureCreatedAsync();
+                    logger.LogInformation("✅ Database creato/verificato (EnsureCreated)");
                 }
                 else
                 {
-                    logger.LogInformation("✔️ Nessuna migrazione da applicare");
+                    // Default behavior (Postgres / Production)
+                    var pending = await db.Database.GetPendingMigrationsAsync();
+                    if (pending.Any())
+                    {
+                        logger.LogWarning("⚠️ Migrazioni pendenti trovate. Le applico...");
+                        await db.Database.MigrateAsync();
+                        logger.LogInformation("✅ Migrazioni completate");
+                    }
+                    else
+                    {
+                        logger.LogInformation("✔️ Nessuna migrazione da applicare");
+                    }
                 }
 
                 await Task.Delay(500); // sicurezza per Railway

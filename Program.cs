@@ -12,11 +12,7 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ----------------------------------------------------------
-// CONFIGURAZIONE PORTA (RAILWAY vs IIS/DOCKER)
-// ----------------------------------------------------------
-// Su Railway la porta viene passata via env PORT.
-// Su IIS (IONOS) non dobbiamo forzare UseUrls, gestisce tutto il modulo ASP.NET Core.
+
 var port = Environment.GetEnvironmentVariable("PORT");
 if (!string.IsNullOrEmpty(port))
 {
@@ -33,56 +29,29 @@ builder.Logging.AddDebug();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 // ----------------------------------------------------------
-// DATABASE CONFIG (Multi-Provider: Postgres, Mssql, Sqlite)
+// DATABASE CONFIG (IONOS MSSQL)
 // ----------------------------------------------------------
-var dbProvider = builder.Configuration["ConnectionStrings:DatabaseProvider"] ?? "Postgres";
-var dbEnvVar = Environment.GetEnvironmentVariable("DATABASE_URL");
+var dbProvider = builder.Configuration["ConnectionStrings:DatabaseProvider"] ?? "Mssql";
 string connectionString = "";
 
-// 1. Priority: Environment Variable (Railway/Docker overriding EVERYTHING)
-if (!string.IsNullOrEmpty(dbEnvVar) && dbProvider.Equals("Postgres", StringComparison.OrdinalIgnoreCase))
+// Config File (appsettings.json)
+if (dbProvider.Equals("Mssql", StringComparison.OrdinalIgnoreCase))
 {
-    try
-    {
-        var validUrl = dbEnvVar.StartsWith("postgres://")
-            ? dbEnvVar.Replace("postgres://", "postgresql://")
-            : dbEnvVar;
-
-        var uri = new Uri(validUrl);
-        var userInfo = uri.UserInfo.Split(':');
-
-        connectionString =
-            $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};" +
-            $"Username={userInfo[0]};Password={(userInfo.Length > 1 ? userInfo[1] : "")};" +
-            $"SSL Mode=Require;Trust Server Certificate=true";
-
-        Console.WriteLine($"🐘 Railway DB (Env Var): {uri.Host}:{uri.Port}");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"⚠️ Errore parsing DATABASE_URL: {ex.Message}");
-    }
+    connectionString = builder.Configuration.GetConnectionString("MssqlConnection") ?? "";
+    Console.WriteLine("🗄️ MSSQL Database (IONOS)");
+}
+else if (dbProvider.Equals("Sqlite", StringComparison.OrdinalIgnoreCase))
+{
+    connectionString = builder.Configuration.GetConnectionString("SqliteConnection") ?? "Data Source=klodtattoo.db";
+    Console.WriteLine("📂 SQLite Database");
+}
+else // Fallback/Other
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+    Console.WriteLine("🐘 Database (Custom/Legacy)");
 }
 
-// 2. Config File (appsettings.json)
-if (string.IsNullOrEmpty(connectionString))
-{
-    if (dbProvider.Equals("Mssql", StringComparison.OrdinalIgnoreCase))
-    {
-        connectionString = builder.Configuration.GetConnectionString("MssqlConnection") ?? "";
-        Console.WriteLine("🗄️ MSSQL Database (IONOS)");
-    }
-    else if (dbProvider.Equals("Sqlite", StringComparison.OrdinalIgnoreCase))
-    {
-        connectionString = builder.Configuration.GetConnectionString("SqliteConnection") ?? "Data Source=klodtattoo.db";
-        Console.WriteLine("📂 SQLite Database");
-    }
-    else // Default to Postgres
-    {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
-        Console.WriteLine("🐘 PostgreSQL Database (Locale/Config)");
-    }
-}
+
 
 // Fix timestamp PostgreSQL (solo se servisse, innocuo altrove)
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -127,7 +96,7 @@ builder.Services.AddDataProtection()
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var cultures = new[] { "de-DE", "it-IT" };
+    var cultures = new[] { "de-DE", "it-IT", "en" };
     options.DefaultRequestCulture = new RequestCulture("de-DE");
     options.SupportedCultures = cultures.Select(c => new CultureInfo(c)).ToList();
     options.SupportedUICultures = cultures.Select(c => new CultureInfo(c)).ToList();
@@ -137,7 +106,12 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
 
-// 1. Per Identity (Interfaccia generica)
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
+// 2. Per Identity (Interfaccia generica)
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // 2. Per il BookingController (Classe concreta - FONDAMENTALE PER IL REPLY-TO)
@@ -158,12 +132,12 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // NON usare HSTS in produzione con Railway - gestiscono loro HTTPS
-    // app.UseHsts();
+    
 }
 
-// IMPORTANTE: Disabilita HTTPS redirect su Railway
-// Railway gestisce HTTPS tramite il loro proxy
+// Compressione Risposte (Performance)
+app.UseResponseCompression();
+
 if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
